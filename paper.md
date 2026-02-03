@@ -47,6 +47,13 @@ Design trade-offs: LLM mutation requires an API key and adds latency; we support
 - **Ablation**: Component importance analysis identifies which mechanism parts (info disclosure, redirect, service rule) matter most.
 - **Reproducibility**: Fixed seeds, `reproducibility_info.json`, single-command benchmark script.
 
+# Limitations
+
+- **Variance across seeds**: Evolution exhibits high variance; we report mean ± 95% CI across multiple seeds. Consider increasing seeds (≥5) for stronger statistical claims.
+- **Simulation fidelity**: Parameters are literature-calibrated but idealized; real-world EDs vary in arrival patterns, acuity mix, and staffing.
+- **Opacity criterion**: Partial disclosure (coarse_bins/none) may not emerge in all runs; the report includes opacity_emergence_rate for transparency.
+- **Computational cost**: Full pipeline (30 generations, 5 convergence runs, robustness, ablations) can take hours; reduce generations or population for quick runs.
+
 # AI Usage Disclosure
 
 LLM-guided mutation (optional) uses the OpenAI API to propose mechanism variants. When enabled, the LLM receives fitness feedback and constraint violations to inform proposals. All LLM outputs are validated and normalized before evaluation. Core simulation, evolution loop, and reporting logic are human-authored.

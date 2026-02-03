@@ -67,9 +67,14 @@ eval:
   n_episodes_ablation: 200
 
 # Pipeline steps (set true to run full pipeline)
+# Tuned for healthcare OR / methods paper: more seeds, longer convergence
 pipeline:
   run_convergence_suite: true
   run_robustness: true
   run_ablations: true
+  convergence_runs: 5         # seeds for statistical validity
+  convergence_generations: 20 # generations per run (>=20 for methods paper)
+  convergence_population: 50  # population size per convergence run
+  convergence_episodes: 50    # episodes per mechanism in convergence runs
 
 results_dir: results

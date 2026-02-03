@@ -3,11 +3,48 @@
 from __future__ import annotations
 
 import json
+import math
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from evolution.population_db import PopulationDB
+
+
+def _ci95_t(values: List[float]) -> tuple[float, float]:
+    """95% confidence interval using t-distribution (small-sample)."""
+    if len(values) < 2:
+        return (values[0], values[0]) if values else (0.0, 0.0)
+    n = len(values)
+    mean = sum(values) / n
+    variance = sum((x - mean) ** 2 for x in values) / (n - 1) if n > 1 else 0
+    std_err = math.sqrt(variance / n) if n > 0 else 0
+    # t_{0.975, n-1} approximation: 2.0 for n~10, 2.78 for n=5, 12.7 for n=2
+    try:
+        import scipy.stats
+        t_val = scipy.stats.t.ppf(0.975, df=n - 1)
+    except ImportError:
+        t_val = 2.0 if n >= 5 else (2.5 if n >= 3 else 4.3)
+    return (mean - t_val * std_err, mean + t_val * std_err)
+
+
+def _ttest_one_sample(values: List[float], mu: float) -> Optional[Dict[str, float]]:
+    """One-sample t-test: H0 mean(values)=mu. Returns p-value, t-stat if scipy available."""
+    if len(values) < 2:
+        return None
+    n = len(values)
+    mean = sum(values) / n
+    variance = sum((x - mean) ** 2 for x in values) / (n - 1)
+    std_err = math.sqrt(variance / n)
+    if std_err <= 0:
+        return None
+    t_stat = (mean - mu) / std_err
+    try:
+        import scipy.stats
+        p_value = 2 * (1 - scipy.stats.t.cdf(abs(t_stat), df=n - 1))
+        return {"t_statistic": t_stat, "p_value": p_value, "df": n - 1}
+    except ImportError:
+        return {"t_statistic": t_stat}
 
 
 def generate_comprehensive_report(
@@ -50,6 +87,9 @@ def generate_comprehensive_report(
             evolution_files, run_id
         )
 
+    # Opacity analysis: does coarse_bins or none emerge across seeds? (methods paper)
+    report["opacity_analysis"] = analyze_opacity_emergence(results_path)
+
     # Analyze baseline results
     baseline_files = list(results_path.glob("**/baselines_results.csv"))
     if baseline_files:
@@ -69,6 +109,29 @@ def generate_comprehensive_report(
     ablation_files = list(results_path.glob("**/ablation_study_results.json"))
     if ablation_files:
         report["ablation_analysis"] = analyze_ablation_results(ablation_files)
+
+    # Statistical comparison: evolved vs best baseline (for methods paper)
+    if report.get("convergence_analysis") and report.get("baseline_comparison"):
+        conv = report["convergence_analysis"]
+        base = report["baseline_comparison"]
+        best_fitnesses = conv.get("best_fitnesses_per_run", [])
+        best_baseline_fitness = base.get("best_baseline_fitness")
+        if best_fitnesses and best_baseline_fitness is not None and len(best_fitnesses) >= 2:
+            ttest = _ttest_one_sample(best_fitnesses, best_baseline_fitness)
+            if ttest:
+                report["statistical_comparison"] = {
+                    "evolved_mean": sum(best_fitnesses) / len(best_fitnesses),
+                    "evolved_n": len(best_fitnesses),
+                    "baseline_best": best_baseline_fitness,
+                    "t_statistic": ttest.get("t_statistic"),
+                    "p_value": ttest.get("p_value"),
+                    "df": ttest.get("df"),
+                    "interpretation": (
+                        "Evolved significantly outperforms best baseline (p < 0.05)"
+                        if ttest.get("p_value", 1) < 0.05 and ttest.get("t_statistic", 0) > 0
+                        else "Difference not statistically significant at α=0.05"
+                    ),
+                }
 
     # Generate summary
     report["summary"] = generate_executive_summary(report)
@@ -124,23 +187,47 @@ def analyze_evolution_results(
     """Analyze evolution/convergence results."""
 
     all_results = []
+    best_fitnesses_raw: List[float] = []
 
     for evo_file in evolution_files:
         try:
             with open(evo_file, "r") as f:
                 raw_data = json.load(f)
-                data = _normalize_evolution_data(raw_data)
-                all_results.append({"file": str(evo_file), "data": data})
+            # Handle convergence_suite_results.json format
+            if "run_results" in raw_data:
+                for run in raw_data["run_results"]:
+                    if run.get("success") and run.get("result"):
+                        bf = run["result"].get("best_fitness")
+                        if bf is not None:
+                            best_fitnesses_raw.append(bf)
+                            conv_data = run["result"].get("convergence_data", [])
+                            all_results.append({
+                                "file": str(evo_file),
+                                "data": {
+                                    "best_fitness": bf,
+                                    "generations": len(conv_data),
+                                    "convergence_data": conv_data,
+                                },
+                            })
+                continue
+            data = _normalize_evolution_data(raw_data)
+            all_results.append({"file": str(evo_file), "data": data})
+            bf = data.get("best_fitness", 0)
+            if bf != 0 or "best_fitness" in data:
+                best_fitnesses_raw.append(bf)
         except Exception as e:
             print(f"Error reading {evo_file}: {e}")
+
+    # Use raw list if we got it from suite; else extract from all_results
+    if not best_fitnesses_raw and all_results:
+        best_fitnesses_raw = [
+            r["data"].get("best_fitness", 0) for r in all_results if "data" in r
+        ]
 
     if not all_results:
         return {"error": "No valid evolution results found"}
 
-    # Extract key statistics
-    best_fitnesses = [
-        r["data"].get("best_fitness", 0) for r in all_results if "data" in r
-    ]
+    best_fitnesses = [f for f in best_fitnesses_raw if f is not None]
     generations = [
         r["data"].get("generations", len(r["data"].get("convergence_data", [])))
         for r in all_results
@@ -148,23 +235,25 @@ def analyze_evolution_results(
     ]
 
     analysis = {
-        "num_evolution_runs": len(all_results),
+        "num_evolution_runs": len(best_fitnesses) or len(all_results),
         "best_overall_fitness": max(best_fitnesses) if best_fitnesses else 0,
         "avg_best_fitness": sum(best_fitnesses) / len(best_fitnesses)
         if best_fitnesses
         else 0,
         "fitness_std": (
-            sum(
-                (f - sum(best_fitnesses) / len(best_fitnesses)) ** 2
-                for f in best_fitnesses
-            )
-            / len(best_fitnesses)
-        )
-        ** 0.5
-        if len(best_fitnesses) > 1
-        else 0,
+            (sum((f - sum(best_fitnesses) / len(best_fitnesses)) ** 2 for f in best_fitnesses) / len(best_fitnesses)) ** 0.5
+            if len(best_fitnesses) > 1
+            else 0
+        ),
         "avg_generations": sum(generations) / len(generations) if generations else 0,
+        "best_fitnesses_per_run": best_fitnesses,  # for statistical tests
     }
+
+    # 95% CI for methods paper (when multiple seeds)
+    if len(best_fitnesses) >= 2:
+        ci_lo, ci_hi = _ci95_t(best_fitnesses)
+        analysis["fitness_ci_95_lower"] = ci_lo
+        analysis["fitness_ci_95_upper"] = ci_hi
 
     # Convergence patterns
     convergence_curves = []
@@ -176,6 +265,23 @@ def analyze_evolution_results(
 
     if convergence_curves:
         final_fitnesses = [c[-1] for c in convergence_curves if c]
+        
+        # Compute min/max/mean per generation across runs
+        max_gen = max(len(c) for c in convergence_curves) if convergence_curves else 0
+        per_generation_stats = []
+        for gen_idx in range(max_gen):
+            gen_fitnesses = []
+            for curve in convergence_curves:
+                if gen_idx < len(curve):
+                    gen_fitnesses.append(curve[gen_idx])
+            if gen_fitnesses:
+                per_generation_stats.append({
+                    "generation": gen_idx,
+                    "min": min(gen_fitnesses),
+                    "max": max(gen_fitnesses),
+                    "mean": sum(gen_fitnesses) / len(gen_fitnesses),
+                })
+        
         analysis["convergence_patterns"] = {
             "num_curves": len(convergence_curves),
             "avg_final_improvement": calculate_avg_improvement(convergence_curves),
@@ -186,9 +292,49 @@ def analyze_evolution_results(
                 (sum((f - sum(final_fitnesses) / len(final_fitnesses)) ** 2 for f in final_fitnesses) / len(final_fitnesses)) ** 0.5
                 if len(final_fitnesses) > 1 else 0
             ),
+            "per_generation_stats": per_generation_stats,  # min/max/mean per generation
         }
 
     return analysis
+
+
+def analyze_opacity_emergence(results_path: Path) -> Dict[str, Any]:
+    """Check if partial disclosure (coarse_bins or none) emerges in evolved mechanisms."""
+    suite_files = list(results_path.glob("**/convergence_suite_results.json"))
+    info_modes: List[str] = []
+    for fp in suite_files:
+        try:
+            with open(fp, "r") as f:
+                data = json.load(f)
+            for run in data.get("run_results", []):
+                if run.get("success") and run.get("result"):
+                    best = run["result"].get("best_mechanism")
+                    if best:
+                        im = best.get("info_policy", {}).get("info_mode", "none")
+                        info_modes.append(im)
+        except Exception:
+            pass
+    # Also check main evolution_result
+    evo_file = results_path / "evolution_result.json"
+    if evo_file.exists():
+        try:
+            with open(evo_file, "r") as f:
+                evo = json.load(f)
+            best = evo.get("best_mechanism")
+            if best:
+                im = best.get("info_policy", {}).get("info_mode", "none")
+                info_modes.append(im)
+        except Exception:
+            pass
+    opacity_modes = ("coarse_bins", "none")
+    emerged = [m for m in info_modes if m in opacity_modes]
+    return {
+        "info_modes_observed": list(dict.fromkeys(info_modes)),
+        "opacity_emergence_count": len(emerged),
+        "total_mechanisms": len(info_modes),
+        "opacity_emergence_rate": len(emerged) / len(info_modes) if info_modes else 0,
+        "criterion_met": len(emerged) >= 1,
+    }
 
 
 def analyze_baseline_results(baseline_files: List[Path]) -> Dict[str, Any]:
@@ -396,6 +542,13 @@ def analyze_robustness_results(robustness_files: List[Path]) -> Dict[str, Any]:
     analysis_result["robustness_table"] = robustness_table
     analysis_result["scenarios"] = scenarios
 
+    # Per-mechanism worst-case fitness degradation (for methods paper)
+    for r in all_results:
+        d = r["data"]
+        if "robustness_analysis" in d and "per_mechanism_robustness" in d["robustness_analysis"]:
+            analysis_result["per_mechanism_robustness"] = d["robustness_analysis"]["per_mechanism_robustness"]
+            break
+
     # Most/least robust mechanisms
     best_mechanisms = []
     worst_mechanisms = []
@@ -408,6 +561,26 @@ def analyze_robustness_results(robustness_files: List[Path]) -> Dict[str, Any]:
 
     analysis_result["most_robust_mechanisms"] = best_mechanisms
     analysis_result["least_robust_mechanisms"] = worst_mechanisms
+    
+    # Compute robustness summary: max degradation and feasible scenarios count
+    if robustness_table:
+        max_degradation = 0.0
+        feasible_counts = []
+        for row in robustness_table:
+            feasible_counts.append(row.get("feasible_scenarios", 0))
+        
+        # Get max degradation from per_mechanism_robustness if available
+        if "per_mechanism_robustness" in analysis_result:
+            for pm_data in analysis_result["per_mechanism_robustness"].values():
+                deg = pm_data.get("worst_case_fitness_degradation", 0)
+                if deg > max_degradation:
+                    max_degradation = deg
+        
+        analysis_result["robustness_summary"] = {
+            "max_degradation_percent": max_degradation * 100 if max_degradation > 0 else 0,
+            "feasible_scenarios_count": max(feasible_counts) if feasible_counts else 0,
+            "total_scenarios": len(scenarios) if scenarios else 6,
+        }
 
     return analysis_result
 
@@ -595,6 +768,23 @@ def generate_executive_summary(report: Dict[str, Any]) -> Dict[str, Any]:
                 "Meets safety constraints at least as well as best baseline (all baselines feasible)"
             )
 
+    # Statistical comparison
+    if report.get("statistical_comparison"):
+        sc = report["statistical_comparison"]
+        if sc.get("interpretation"):
+            summary["statistical_interpretation"] = sc["interpretation"]
+            summary["key_findings"].append(sc["interpretation"])
+
+    # Opacity
+    if report.get("opacity_analysis"):
+        op = report["opacity_analysis"]
+        if op.get("total_mechanisms", 0) > 0:
+            rate = op.get("opacity_emergence_rate", 0)
+            met = op.get("criterion_met", False)
+            summary["key_findings"].append(
+                f"Opacity (coarse_bins/none) emergence: {rate * 100:.0f}% of runs ({'criterion met' if met else 'criterion not met'})"
+            )
+
     # Pareto analysis
     if report.get("pareto_analysis"):
         pareto = report["pareto_analysis"]
@@ -606,7 +796,26 @@ def generate_executive_summary(report: Dict[str, Any]) -> Dict[str, Any]:
     # Robustness
     if report.get("robustness_analysis"):
         robust = report["robustness_analysis"]
-        if "avg_robustness_score" in robust:
+        # Add robustness summary if available
+        if "robustness_summary" in robust:
+            rs = robust["robustness_summary"]
+            summary["key_findings"].append(
+                f"Performance degrades by at most {rs.get('max_degradation_percent', 0):.1f}% under shifts"
+            )
+            summary["key_findings"].append(
+                f"Remains feasible under {rs.get('feasible_scenarios_count', 0)} of {rs.get('total_scenarios', 6)} scenarios"
+            )
+        if "per_mechanism_robustness" in robust:
+            pmr = robust["per_mechanism_robustness"]
+            evolved = [p for p in pmr.values() if "mutated" in str(p.get("seed_tag", "")) or "evolution" in str(p.get("seed_tag", ""))]
+            if evolved:
+                best_ev = min(evolved, key=lambda x: x.get("worst_case_fitness_degradation", 999))
+                fea = best_ev.get("feasible_scenarios", 0)
+                tot = best_ev.get("total_scenarios", 6)
+                summary["key_findings"].append(
+                    f"Best evolved mechanism: {fea}/{tot} scenarios passed, worst-case fitness drop {best_ev.get('worst_case_fitness_degradation', 0):.2f}"
+                )
+        elif "avg_robustness_score" in robust:
             score = robust["avg_robustness_score"]
             summary["key_findings"].append(
                 f"Average robustness score: {score:.4f} ({'good' if score < 1.0 else 'moderate' if score < 5.0 else 'poor'})"
@@ -721,7 +930,10 @@ Generated: {report["metadata"]["generated_at"]}
         if "best_overall_fitness" in conv:
             md_content += f"- **Best fitness**: {conv['best_overall_fitness']:.4f}\n"
         if "avg_best_fitness" in conv:
-            md_content += f"- **Average best fitness**: {conv['avg_best_fitness']:.4f}\n"
+            ci = ""
+            if "fitness_ci_95_lower" in conv and "fitness_ci_95_upper" in conv:
+                ci = f" (95% CI: [{conv['fitness_ci_95_lower']:.4f}, {conv['fitness_ci_95_upper']:.4f}])"
+            md_content += f"- **Average best fitness**: {conv['avg_best_fitness']:.4f}{ci}\n"
         if "fitness_std" in conv:
             md_content += f"- **Std of final fitness (across seeds)**: {conv['fitness_std']:.4f}\n"
         if "convergence_patterns" in conv:
@@ -730,6 +942,16 @@ Generated: {report["metadata"]["generated_at"]}
                 md_content += f"- **Convergence consistency**: {pat['convergence_consistency']:.4f}\n"
             if "convergence_std" in pat:
                 md_content += f"- **Convergence std (final gen)**: {pat['convergence_std']:.4f}\n"
+            # Convergence curves: min/max/mean per generation
+            if "per_generation_stats" in pat and pat["per_generation_stats"]:
+                md_content += "\n### Convergence Curves (min/max/mean per generation)\n\n"
+                md_content += "| Generation | Min Fitness | Max Fitness | Mean Fitness |\n"
+                md_content += "|------------|------------|-------------|--------------|\n"
+                for stat in pat["per_generation_stats"][:20]:  # Show first 20 generations
+                    md_content += f"| {stat['generation']} | {stat['min']:.4f} | {stat['max']:.4f} | {stat['mean']:.4f} |\n"
+                if len(pat["per_generation_stats"]) > 20:
+                    md_content += f"*... ({len(pat['per_generation_stats']) - 20} more generations)*\n"
+                md_content += "\n"
         md_content += "\n"
         plot_paths = list(results_path.glob("**/convergence*.png"))
         if plot_paths:
@@ -766,12 +988,55 @@ Generated: {report["metadata"]["generated_at"]}
                 md_content += f"| {name} | {fit:.4f} | {feas} | {adv:.4f} | {ttc:.4f} | {thru:.4f} | {wait:.4f} |\n"
             md_content += "\n"
 
+    # Opacity analysis
+    if "opacity_analysis" in report:
+        op = report["opacity_analysis"]
+        if op.get("total_mechanisms", 0) > 0:
+            md_content += "## Opacity Analysis\n\n"
+            md_content += f"- Info modes observed: {op.get('info_modes_observed', [])}\n"
+            md_content += f"- Opacity (coarse_bins/none) emergence: {op.get('opacity_emergence_rate', 0) * 100:.0f}% ({op.get('opacity_emergence_count', 0)}/{op.get('total_mechanisms', 0)} runs)\n"
+            md_content += f"- Criterion met: {op.get('criterion_met', False)}\n\n"
+
+    # Statistical comparison (methods paper)
+    if "statistical_comparison" in report:
+        sc = report["statistical_comparison"]
+        md_content += "## Statistical Comparison\n\n"
+        md_content += f"- Evolved mean fitness: {sc.get('evolved_mean', 0):.4f} (n={sc.get('evolved_n', 0)})\n"
+        md_content += f"- Best baseline fitness: {sc.get('baseline_best', 0):.4f}\n"
+        if sc.get("t_statistic") is not None:
+            md_content += f"- One-sample t-test: t={sc['t_statistic']:.3f}"
+            if sc.get("p_value") is not None:
+                md_content += f", p={sc['p_value']:.4f}"
+            md_content += "\n"
+        if sc.get("interpretation"):
+            md_content += f"- **{sc['interpretation']}**\n"
+        md_content += "\n"
+
     # Robustness
     if "robustness_analysis" in report:
         md_content += "## Robustness Tests\n\n"
         robust = report["robustness_analysis"]
         if "avg_robustness_score" in robust:
             md_content += f"- **Average robustness score**: {robust['avg_robustness_score']:.4f}\n"
+        # Robustness summary: degradation and feasibility
+        if "robustness_summary" in robust:
+            rs = robust["robustness_summary"]
+            md_content += f"- **Performance degrades by at most**: {rs.get('max_degradation_percent', 0):.1f}% under shifts\n"
+            md_content += f"- **Remains feasible under**: {rs.get('feasible_scenarios_count', 0)} of {rs.get('total_scenarios', 6)} scenarios\n"
+            md_content += "\n"
+        if "per_mechanism_robustness" in robust:
+            md_content += "\n### Per-mechanism worst-case fitness degradation\n\n"
+            md_content += "| Mechanism | Nominal | Min (worst shift) | Degradation | Scenarios passed |\n"
+            md_content += "|-----------|---------|-------------------|-------------|------------------|\n"
+            for mech_id, pm in list(robust["per_mechanism_robustness"].items())[:10]:
+                tag = pm.get("seed_tag", mech_id[:8])
+                nom = pm.get("nominal_fitness", 0)
+                mn = pm.get("min_fitness_across_shifts", 0)
+                deg = pm.get("worst_case_fitness_degradation", 0)
+                fea = pm.get("feasible_scenarios", 0)
+                tot = pm.get("total_scenarios", 6)
+                md_content += f"| {tag} | {nom:.2f} | {mn:.2f} | {deg:.2f} | {fea}/{tot} |\n"
+            md_content += "\n"
         if "robustness_table" in robust and robust["robustness_table"]:
             md_content += "\n### Mechanism x Scenario\n\n"
             scenarios = robust.get("scenarios", [])

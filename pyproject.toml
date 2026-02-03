@@ -40,6 +40,7 @@ dependencies = [
 
 [project.optional-dependencies]
 llm = ["openai>=1.55"]
+stats = ["scipy>=1.10"]  # for 95% CI and t-tests in report (methods paper)
 
 [project.urls]
 Repository = "https://github.com/sahilk873/eclipse"

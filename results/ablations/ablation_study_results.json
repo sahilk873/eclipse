@@ -1,0 +1,878 @@
+{
+  "config": {
+    "episodes_per_ablation": 200,
+    "base_seed": 0,
+    "ablation_variants": [
+      "no_info",
+      "fifo_service",
+      "no_redirect",
+      "no_reneging",
+      "combined_redirect"
+    ]
+  },
+  "original_mechanism": {
+    "info_policy": {
+      "info_mode": "exact"
+    },
+    "service_policy": {
+      "service_rule": "severity_priority",
+      "params": {
+        "a": 2.0,
+        "b": 0.05
+      }
+    },
+    "redirect_exit_policy": {
+      "redirect_low_risk": true,
+      "redirect_mode": "none",
+      "reneging_enabled": true,
+      "params": {
+        "congestion_threshold": 6.1
+      }
+    },
+    "meta": {
+      "id": "3951cbbe-5dfe-4228-b1d1-2fc6a6a7271a",
+      "parent_ids": [
+        "f81442b8-78d1-4d73-b346-b4fa500796fc"
+      ],
+      "generation": 11,
+      "seed_tag": "mutated_9288"
+    }
+  },
+  "ablation_results": {
+    "original": {
+      "mechanism": {
+        "info_policy": {
+          "info_mode": "exact"
+        },
+        "service_policy": {
+          "service_rule": "severity_priority",
+          "params": {
+            "a": 2.0,
+            "b": 0.05
+          }
+        },
+        "redirect_exit_policy": {
+          "redirect_low_risk": true,
+          "redirect_mode": "none",
+          "reneging_enabled": true,
+          "params": {
+            "congestion_threshold": 6.1
+          }
+        },
+        "meta": {
+          "id": "3951cbbe-5dfe-4228-b1d1-2fc6a6a7271a",
+          "parent_ids": [
+            "f81442b8-78d1-4d73-b346-b4fa500796fc"
+          ],
+          "generation": 11,
+          "seed_tag": "mutated_9288"
+        }
+      },
+      "evaluation": {
+        "mean_metrics": {
+          "critical_served": 3.25,
+          "critical_redirected": 0.0,
+          "critical_left": 0.005,
+          "missed_critical_rate": 0.0016666666666666666,
+          "critical_TTC_mean": 0.38881038957981234,
+          "critical_TTC_p95": 0.38881038957981234,
+          "adverse_events_count": 0.13,
+          "adverse_events_rate": 0.004241627995765932,
+          "throughput": 3.953125,
+          "total_served": 31.625,
+          "mean_wait": 4.267138537133832,
+          "p95_wait": 4.267138537133832,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "std_metrics": {
+          "critical_served": 1.8648056198971517,
+          "critical_redirected": 0.0,
+          "critical_left": 0.07053367989832944,
+          "missed_critical_rate": 0.023511226632776477,
+          "critical_TTC_mean": 0.8700782986572656,
+          "critical_TTC_p95": 0.8700782986572656,
+          "adverse_events_count": 0.3508560958569767,
+          "adverse_events_rate": 0.011877964776134219,
+          "throughput": 0.6234277098228792,
+          "total_served": 4.987421678583034,
+          "mean_wait": 3.684918092956091,
+          "p95_wait": 3.684918092956091,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "constraint_rates": {
+          "missed_critical_rate": 0.005,
+          "critical_TTC_exceeded": 0.0
+        },
+        "fitness": 4.9597075422766785,
+        "feasible": true,
+        "pareto_vector": [
+          0.0,
+          0.38881038957981234,
+          0.0,
+          3.953125
+        ],
+        "mechanism": {
+          "info_policy": {
+            "info_mode": "exact"
+          },
+          "service_policy": {
+            "service_rule": "severity_priority",
+            "params": {
+              "a": 2.0,
+              "b": 0.05
+            }
+          },
+          "redirect_exit_policy": {
+            "redirect_low_risk": true,
+            "redirect_mode": "none",
+            "reneging_enabled": true,
+            "params": {
+              "congestion_threshold": 6.1
+            }
+          },
+          "meta": {
+            "id": "3951cbbe-5dfe-4228-b1d1-2fc6a6a7271a",
+            "parent_ids": [
+              "f81442b8-78d1-4d73-b346-b4fa500796fc"
+            ],
+            "generation": 11,
+            "seed_tag": "mutated_9288"
+          }
+        }
+      },
+      "description": "Original best mechanism"
+    },
+    "no_info": {
+      "mechanism": {
+        "info_policy": {
+          "info_mode": "none"
+        },
+        "service_policy": {
+          "service_rule": "severity_priority",
+          "params": {
+            "a": 2.0,
+            "b": 0.05
+          }
+        },
+        "redirect_exit_policy": {
+          "redirect_low_risk": true,
+          "redirect_mode": "none",
+          "reneging_enabled": true,
+          "params": {
+            "congestion_threshold": 6.1
+          }
+        },
+        "meta": {
+          "id": "88505b3b-33b3-4c33-8b2d-88334be61739",
+          "parent_ids": [
+            "f81442b8-78d1-4d73-b346-b4fa500796fc"
+          ],
+          "generation": 11,
+          "seed_tag": "ablation_no_info"
+        }
+      },
+      "evaluation": {
+        "mean_metrics": {
+          "critical_served": 3.425,
+          "critical_redirected": 0.0,
+          "critical_left": 0.005,
+          "missed_critical_rate": 0.001,
+          "critical_TTC_mean": 0.09924842566614929,
+          "critical_TTC_p95": 0.09924842566614929,
+          "adverse_events_count": 0.055,
+          "adverse_events_rate": 0.003811849914791091,
+          "throughput": 1.645,
+          "total_served": 13.16,
+          "mean_wait": 0.921573285385308,
+          "p95_wait": 0.921573285385308,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "std_metrics": {
+          "critical_served": 1.759083568225228,
+          "critical_redirected": 0.0,
+          "critical_left": 0.07053367989832943,
+          "missed_critical_rate": 0.014106735979665885,
+          "critical_TTC_mean": 0.5008239423853078,
+          "critical_TTC_p95": 0.5008239423853078,
+          "adverse_events_count": 0.22798026230356,
+          "adverse_events_rate": 0.016581216660430144,
+          "throughput": 0.4591840589567543,
+          "total_served": 3.6734724716540343,
+          "mean_wait": 2.7409496603118977,
+          "p95_wait": 2.7409496603118977,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "constraint_rates": {
+          "missed_critical_rate": 0.005,
+          "critical_TTC_exceeded": 0.0
+        },
+        "fitness": 2.3487799401620877,
+        "feasible": true,
+        "pareto_vector": [
+          0.0,
+          0.09924842566614929,
+          0.0,
+          1.645
+        ],
+        "mechanism": {
+          "info_policy": {
+            "info_mode": "none"
+          },
+          "service_policy": {
+            "service_rule": "severity_priority",
+            "params": {
+              "a": 2.0,
+              "b": 0.05
+            }
+          },
+          "redirect_exit_policy": {
+            "redirect_low_risk": true,
+            "redirect_mode": "none",
+            "reneging_enabled": true,
+            "params": {
+              "congestion_threshold": 6.1
+            }
+          },
+          "meta": {
+            "id": "88505b3b-33b3-4c33-8b2d-88334be61739",
+            "parent_ids": [
+              "f81442b8-78d1-4d73-b346-b4fa500796fc"
+            ],
+            "generation": 11,
+            "seed_tag": "ablation_no_info"
+          }
+        }
+      },
+      "description": "No information provided to patients"
+    },
+    "fifo_service": {
+      "mechanism": {
+        "info_policy": {
+          "info_mode": "exact"
+        },
+        "service_policy": {
+          "service_rule": "fifo"
+        },
+        "redirect_exit_policy": {
+          "redirect_low_risk": true,
+          "redirect_mode": "none",
+          "reneging_enabled": true,
+          "params": {
+            "congestion_threshold": 6.1
+          }
+        },
+        "meta": {
+          "id": "7c672931-50fd-4f20-a0bc-040ab4a4f003",
+          "parent_ids": [
+            "f81442b8-78d1-4d73-b346-b4fa500796fc"
+          ],
+          "generation": 11,
+          "seed_tag": "ablation_fifo"
+        }
+      },
+      "evaluation": {
+        "mean_metrics": {
+          "critical_served": 3.195,
+          "critical_redirected": 0.0,
+          "critical_left": 0.03,
+          "missed_critical_rate": 0.006853174603174603,
+          "critical_TTC_mean": 0.5221917987379012,
+          "critical_TTC_p95": 0.5221917987379012,
+          "adverse_events_count": 0.175,
+          "adverse_events_rate": 0.005067024351722198,
+          "throughput": 3.885625,
+          "total_served": 31.085,
+          "mean_wait": 4.348245906578213,
+          "p95_wait": 4.348245906578213,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "std_metrics": {
+          "critical_served": 1.7711507558646724,
+          "critical_redirected": 0.0,
+          "critical_left": 0.1705872210923198,
+          "missed_critical_rate": 0.04492429296199942,
+          "critical_TTC_mean": 1.3113622151360762,
+          "critical_TTC_p95": 1.3113622151360762,
+          "adverse_events_count": 0.3799671038392666,
+          "adverse_events_rate": 0.011128708188547255,
+          "throughput": 0.6348938764667683,
+          "total_served": 5.0791510117341465,
+          "mean_wait": 3.5627923187532535,
+          "p95_wait": 3.5627923187532535,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "constraint_rates": {
+          "missed_critical_rate": 0.03,
+          "critical_TTC_exceeded": 0.0
+        },
+        "fitness": 4.5682328128007725,
+        "feasible": true,
+        "pareto_vector": [
+          0.0,
+          0.5221917987379012,
+          0.0,
+          3.885625
+        ],
+        "mechanism": {
+          "info_policy": {
+            "info_mode": "exact"
+          },
+          "service_policy": {
+            "service_rule": "fifo"
+          },
+          "redirect_exit_policy": {
+            "redirect_low_risk": true,
+            "redirect_mode": "none",
+            "reneging_enabled": true,
+            "params": {
+              "congestion_threshold": 6.1
+            }
+          },
+          "meta": {
+            "id": "7c672931-50fd-4f20-a0bc-040ab4a4f003",
+            "parent_ids": [
+              "f81442b8-78d1-4d73-b346-b4fa500796fc"
+            ],
+            "generation": 11,
+            "seed_tag": "ablation_fifo"
+          }
+        }
+      },
+      "description": "FIFO service rule (no prioritization)"
+    },
+    "no_redirect": {
+      "mechanism": {
+        "info_policy": {
+          "info_mode": "exact"
+        },
+        "service_policy": {
+          "service_rule": "severity_priority",
+          "params": {
+            "a": 2.0,
+            "b": 0.05
+          }
+        },
+        "redirect_exit_policy": {
+          "redirect_low_risk": false,
+          "redirect_mode": "none",
+          "reneging_enabled": true
+        },
+        "meta": {
+          "id": "624e726e-d007-4d15-94e4-2068f2a9380a",
+          "parent_ids": [
+            "f81442b8-78d1-4d73-b346-b4fa500796fc"
+          ],
+          "generation": 11,
+          "seed_tag": "ablation_no_redirect"
+        }
+      },
+      "evaluation": {
+        "mean_metrics": {
+          "critical_served": 3.335,
+          "critical_redirected": 0.0,
+          "critical_left": 0.03,
+          "missed_critical_rate": 0.006214285714285715,
+          "critical_TTC_mean": 0.4996214185807088,
+          "critical_TTC_p95": 0.4996214185807088,
+          "adverse_events_count": 0.2,
+          "adverse_events_rate": 0.0061912249958892066,
+          "throughput": 3.906875,
+          "total_served": 31.255,
+          "mean_wait": 4.215330811026953,
+          "p95_wait": 4.215330811026953,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "std_metrics": {
+          "critical_served": 1.7840333517061837,
+          "critical_redirected": 0.0,
+          "critical_left": 0.1705872210923198,
+          "missed_critical_rate": 0.03589461616158828,
+          "critical_TTC_mean": 1.2542406988772798,
+          "critical_TTC_p95": 1.2542406988772798,
+          "adverse_events_count": 0.447213595499958,
+          "adverse_events_rate": 0.014036004532289297,
+          "throughput": 0.6475913907511434,
+          "total_served": 5.180731126009147,
+          "mean_wait": 3.429881049764152,
+          "p95_wait": 3.429881049764152,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "constraint_rates": {
+          "missed_critical_rate": 0.03,
+          "critical_TTC_exceeded": 0.0
+        },
+        "fitness": 4.587340676316893,
+        "feasible": true,
+        "pareto_vector": [
+          0.0,
+          0.4996214185807088,
+          0.0,
+          3.906875
+        ],
+        "mechanism": {
+          "info_policy": {
+            "info_mode": "exact"
+          },
+          "service_policy": {
+            "service_rule": "severity_priority",
+            "params": {
+              "a": 2.0,
+              "b": 0.05
+            }
+          },
+          "redirect_exit_policy": {
+            "redirect_low_risk": false,
+            "redirect_mode": "none",
+            "reneging_enabled": true
+          },
+          "meta": {
+            "id": "624e726e-d007-4d15-94e4-2068f2a9380a",
+            "parent_ids": [
+              "f81442b8-78d1-4d73-b346-b4fa500796fc"
+            ],
+            "generation": 11,
+            "seed_tag": "ablation_no_redirect"
+          }
+        }
+      },
+      "description": "No patient redirection"
+    },
+    "no_reneging": {
+      "mechanism": {
+        "info_policy": {
+          "info_mode": "exact"
+        },
+        "service_policy": {
+          "service_rule": "severity_priority",
+          "params": {
+            "a": 2.0,
+            "b": 0.05
+          }
+        },
+        "redirect_exit_policy": {
+          "redirect_low_risk": true,
+          "redirect_mode": "none",
+          "reneging_enabled": false,
+          "params": {
+            "congestion_threshold": 6.1
+          }
+        },
+        "meta": {
+          "id": "26eb9928-9fcc-4aa5-bac8-fe1d160ef4bb",
+          "parent_ids": [
+            "f81442b8-78d1-4d73-b346-b4fa500796fc"
+          ],
+          "generation": 11,
+          "seed_tag": "ablation_no_reneging"
+        }
+      },
+      "evaluation": {
+        "mean_metrics": {
+          "critical_served": 3.26,
+          "critical_redirected": 0.0,
+          "critical_left": 0.0,
+          "missed_critical_rate": 0.0,
+          "critical_TTC_mean": 0.3885685088957716,
+          "critical_TTC_p95": 0.3885685088957716,
+          "adverse_events_count": 0.14,
+          "adverse_events_rate": 0.0043895253568078715,
+          "throughput": 3.944375,
+          "total_served": 31.555,
+          "mean_wait": 5.43169227867237,
+          "p95_wait": 5.4891597085497486,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "std_metrics": {
+          "critical_served": 1.8172506706560876,
+          "critical_redirected": 0.0,
+          "critical_left": 0.0,
+          "missed_critical_rate": 0.0,
+          "critical_TTC_mean": 1.0484645050093009,
+          "critical_TTC_p95": 1.0484645050093009,
+          "adverse_events_count": 0.4004996878900156,
+          "adverse_events_rate": 0.01273466069464013,
+          "throughput": 0.6542764968841537,
+          "total_served": 5.234211975073229,
+          "mean_wait": 3.7824544733577214,
+          "p95_wait": 3.93665001023847,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "constraint_rates": {
+          "missed_critical_rate": 0.0,
+          "critical_TTC_exceeded": 0.0
+        },
+        "fitness": 4.345382816087257,
+        "feasible": true,
+        "pareto_vector": [
+          0.0,
+          0.3885685088957716,
+          0.0,
+          3.944375
+        ],
+        "mechanism": {
+          "info_policy": {
+            "info_mode": "exact"
+          },
+          "service_policy": {
+            "service_rule": "severity_priority",
+            "params": {
+              "a": 2.0,
+              "b": 0.05
+            }
+          },
+          "redirect_exit_policy": {
+            "redirect_low_risk": true,
+            "redirect_mode": "none",
+            "reneging_enabled": false,
+            "params": {
+              "congestion_threshold": 6.1
+            }
+          },
+          "meta": {
+            "id": "26eb9928-9fcc-4aa5-bac8-fe1d160ef4bb",
+            "parent_ids": [
+              "f81442b8-78d1-4d73-b346-b4fa500796fc"
+            ],
+            "generation": 11,
+            "seed_tag": "ablation_no_reneging"
+          }
+        }
+      },
+      "description": "No patient reneging"
+    },
+    "combined_redirect": {
+      "mechanism": {
+        "info_policy": {
+          "info_mode": "exact"
+        },
+        "service_policy": {
+          "service_rule": "severity_priority",
+          "params": {
+            "a": 2.0,
+            "b": 0.05
+          }
+        },
+        "redirect_exit_policy": {
+          "redirect_low_risk": true,
+          "redirect_mode": "combined",
+          "reneging_enabled": true,
+          "params": {
+            "risk_threshold": 0.3,
+            "congestion_threshold": 15
+          }
+        },
+        "meta": {
+          "id": "9f73b266-794a-425c-a283-dc2ecac5ac40",
+          "parent_ids": [
+            "f81442b8-78d1-4d73-b346-b4fa500796fc"
+          ],
+          "generation": 11,
+          "seed_tag": "ablation_combined_redirect"
+        }
+      },
+      "evaluation": {
+        "mean_metrics": {
+          "critical_served": 3.25,
+          "critical_redirected": 0.0,
+          "critical_left": 0.01,
+          "missed_critical_rate": 0.0026666666666666666,
+          "critical_TTC_mean": 0.5553196825268697,
+          "critical_TTC_p95": 0.5553196825268697,
+          "adverse_events_count": 0.185,
+          "adverse_events_rate": 0.005858518827189214,
+          "throughput": 3.85375,
+          "total_served": 30.83,
+          "mean_wait": 4.573348750001028,
+          "p95_wait": 4.573348750001028,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "std_metrics": {
+          "critical_served": 1.7937391114652097,
+          "critical_redirected": 0.0,
+          "critical_left": 0.09949874371066199,
+          "missed_critical_rate": 0.02735771270491092,
+          "critical_TTC_mean": 1.1505508162587812,
+          "critical_TTC_p95": 1.1505508162587812,
+          "adverse_events_count": 0.4132493194186773,
+          "adverse_events_rate": 0.013406386797494998,
+          "throughput": 0.6084188010737341,
+          "total_served": 4.867350408589873,
+          "mean_wait": 3.9292314287667836,
+          "p95_wait": 3.9292314287667836,
+          "clinician_utilization": 0.0,
+          "overload_time": 0.0
+        },
+        "constraint_rates": {
+          "missed_critical_rate": 0.01,
+          "critical_TTC_exceeded": 0.0
+        },
+        "fitness": 4.279654059753694,
+        "feasible": true,
+        "pareto_vector": [
+          0.0,
+          0.5553196825268697,
+          0.0,
+          3.85375
+        ],
+        "mechanism": {
+          "info_policy": {
+            "info_mode": "exact"
+          },
+          "service_policy": {
+            "service_rule": "severity_priority",
+            "params": {
+              "a": 2.0,
+              "b": 0.05
+            }
+          },
+          "redirect_exit_policy": {
+            "redirect_low_risk": true,
+            "redirect_mode": "combined",
+            "reneging_enabled": true,
+            "params": {
+              "risk_threshold": 0.3,
+              "congestion_threshold": 15
+            }
+          },
+          "meta": {
+            "id": "9f73b266-794a-425c-a283-dc2ecac5ac40",
+            "parent_ids": [
+              "f81442b8-78d1-4d73-b346-b4fa500796fc"
+            ],
+            "generation": 11,
+            "seed_tag": "ablation_combined_redirect"
+          }
+        }
+      },
+      "description": "Combined risk and congestion-based redirection"
+    }
+  },
+  "component_analysis": {
+    "component_importance": {
+      "no_info": {
+        "fitness_impact": -2.610927602114591,
+        "metric_impacts": {
+          "throughput": -2.308125,
+          "critical_TTC_p95": 0.28956196391366307,
+          "adverse_events_rate": 0.000429778080974841,
+          "missed_critical_rate": 0.0006666666666666665,
+          "overload_time": 0.0
+        },
+        "description": "No information provided to patients",
+        "relative_fitness": 0.47357226613485276
+      },
+      "fifo_service": {
+        "fitness_impact": -0.391474729475906,
+        "metric_impacts": {
+          "throughput": -0.0674999999999999,
+          "critical_TTC_p95": -0.13338140915808888,
+          "adverse_events_rate": -0.0008253963559562661,
+          "missed_critical_rate": -0.005186507936507937,
+          "overload_time": 0.0
+        },
+        "description": "FIFO service rule (no prioritization)",
+        "relative_fitness": 0.9210689892218513
+      },
+      "no_redirect": {
+        "fitness_impact": -0.3723668659597852,
+        "metric_impacts": {
+          "throughput": -0.046250000000000124,
+          "critical_TTC_p95": -0.11081102900089645,
+          "adverse_events_rate": -0.0019495970001232746,
+          "missed_critical_rate": -0.004547619047619049,
+          "overload_time": 0.0
+        },
+        "description": "No patient redirection",
+        "relative_fitness": 0.9249216082227187
+      },
+      "no_reneging": {
+        "fitness_impact": -0.6143247261894214,
+        "metric_impacts": {
+          "throughput": -0.008750000000000036,
+          "critical_TTC_p95": 0.0002418806840407406,
+          "adverse_events_rate": -0.00014789736104193953,
+          "missed_critical_rate": 0.0016666666666666666,
+          "overload_time": 0.0
+        },
+        "description": "No patient reneging",
+        "relative_fitness": 0.8761369050588365
+      },
+      "combined_redirect": {
+        "fitness_impact": -0.6800534825229843,
+        "metric_impacts": {
+          "throughput": -0.09937500000000021,
+          "critical_TTC_p95": -0.16650929294705735,
+          "adverse_events_rate": -0.001616890831423282,
+          "missed_critical_rate": -0.001,
+          "overload_time": 0.0
+        },
+        "description": "Combined risk and congestion-based redirection",
+        "relative_fitness": 0.862884358255766
+      }
+    },
+    "component_effects": {
+      "no_info": {
+        "throughput": -2.308125,
+        "critical_TTC_p95": 0.28956196391366307,
+        "adverse_events_rate": 0.000429778080974841,
+        "missed_critical_rate": 0.0006666666666666665,
+        "overload_time": 0.0
+      },
+      "fifo_service": {
+        "throughput": -0.0674999999999999,
+        "critical_TTC_p95": -0.13338140915808888,
+        "adverse_events_rate": -0.0008253963559562661,
+        "missed_critical_rate": -0.005186507936507937,
+        "overload_time": 0.0
+      },
+      "no_redirect": {
+        "throughput": -0.046250000000000124,
+        "critical_TTC_p95": -0.11081102900089645,
+        "adverse_events_rate": -0.0019495970001232746,
+        "missed_critical_rate": -0.004547619047619049,
+        "overload_time": 0.0
+      },
+      "no_reneging": {
+        "throughput": -0.008750000000000036,
+        "critical_TTC_p95": 0.0002418806840407406,
+        "adverse_events_rate": -0.00014789736104193953,
+        "missed_critical_rate": 0.0016666666666666666,
+        "overload_time": 0.0
+      },
+      "combined_redirect": {
+        "throughput": -0.09937500000000021,
+        "critical_TTC_p95": -0.16650929294705735,
+        "adverse_events_rate": -0.001616890831423282,
+        "missed_critical_rate": -0.001,
+        "overload_time": 0.0
+      }
+    },
+    "ranked_components": [
+      [
+        "no_info",
+        {
+          "fitness_impact": -2.610927602114591,
+          "metric_impacts": {
+            "throughput": -2.308125,
+            "critical_TTC_p95": 0.28956196391366307,
+            "adverse_events_rate": 0.000429778080974841,
+            "missed_critical_rate": 0.0006666666666666665,
+            "overload_time": 0.0
+          },
+          "description": "No information provided to patients",
+          "relative_fitness": 0.47357226613485276
+        }
+      ],
+      [
+        "combined_redirect",
+        {
+          "fitness_impact": -0.6800534825229843,
+          "metric_impacts": {
+            "throughput": -0.09937500000000021,
+            "critical_TTC_p95": -0.16650929294705735,
+            "adverse_events_rate": -0.001616890831423282,
+            "missed_critical_rate": -0.001,
+            "overload_time": 0.0
+          },
+          "description": "Combined risk and congestion-based redirection",
+          "relative_fitness": 0.862884358255766
+        }
+      ],
+      [
+        "no_reneging",
+        {
+          "fitness_impact": -0.6143247261894214,
+          "metric_impacts": {
+            "throughput": -0.008750000000000036,
+            "critical_TTC_p95": 0.0002418806840407406,
+            "adverse_events_rate": -0.00014789736104193953,
+            "missed_critical_rate": 0.0016666666666666666,
+            "overload_time": 0.0
+          },
+          "description": "No patient reneging",
+          "relative_fitness": 0.8761369050588365
+        }
+      ],
+      [
+        "fifo_service",
+        {
+          "fitness_impact": -0.391474729475906,
+          "metric_impacts": {
+            "throughput": -0.0674999999999999,
+            "critical_TTC_p95": -0.13338140915808888,
+            "adverse_events_rate": -0.0008253963559562661,
+            "missed_critical_rate": -0.005186507936507937,
+            "overload_time": 0.0
+          },
+          "description": "FIFO service rule (no prioritization)",
+          "relative_fitness": 0.9210689892218513
+        }
+      ],
+      [
+        "no_redirect",
+        {
+          "fitness_impact": -0.3723668659597852,
+          "metric_impacts": {
+            "throughput": -0.046250000000000124,
+            "critical_TTC_p95": -0.11081102900089645,
+            "adverse_events_rate": -0.0019495970001232746,
+            "missed_critical_rate": -0.004547619047619049,
+            "overload_time": 0.0
+          },
+          "description": "No patient redirection",
+          "relative_fitness": 0.9249216082227187
+        }
+      ]
+    ],
+    "critical_components": [
+      "no_info",
+      "fifo_service",
+      "no_redirect",
+      "no_reneging",
+      "combined_redirect"
+    ],
+    "moderate_components": [],
+    "minor_components": [],
+    "most_important": [
+      "no_info",
+      {
+        "fitness_impact": -2.610927602114591,
+        "metric_impacts": {
+          "throughput": -2.308125,
+          "critical_TTC_p95": 0.28956196391366307,
+          "adverse_events_rate": 0.000429778080974841,
+          "missed_critical_rate": 0.0006666666666666665,
+          "overload_time": 0.0
+        },
+        "description": "No information provided to patients",
+        "relative_fitness": 0.47357226613485276
+      }
+    ],
+    "least_important": [
+      "no_redirect",
+      {
+        "fitness_impact": -0.3723668659597852,
+        "metric_impacts": {
+          "throughput": -0.046250000000000124,
+          "critical_TTC_p95": -0.11081102900089645,
+          "adverse_events_rate": -0.0019495970001232746,
+          "missed_critical_rate": -0.004547619047619049,
+          "overload_time": 0.0
+        },
+        "description": "No patient redirection",
+        "relative_fitness": 0.9249216082227187
+      }
+    ]
+  }
+}

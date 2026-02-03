@@ -1,42 +1,28 @@
 {
   "info_policy": {
-    "info_mode": "coarse_bins",
-    "bins": [
-      [
-        25.0,
-        "low"
-      ],
-      [
-        999.0,
-        "high"
-      ],
-      [
-        1033.9,
-        "bin_3"
-      ]
-    ]
+    "info_mode": "exact"
   },
   "service_policy": {
-    "service_rule": "hybrid",
+    "service_rule": "severity_priority",
     "params": {
-      "a": 2.5,
-      "b": 0.1
+      "a": 2.0,
+      "b": 0.05
     }
   },
   "redirect_exit_policy": {
-    "redirect_low_risk": false,
+    "redirect_low_risk": true,
     "redirect_mode": "none",
     "reneging_enabled": true,
     "params": {
-      "congestion_threshold": 3.5
+      "congestion_threshold": 6.1
     }
   },
   "meta": {
-    "id": "4eee5a49-fd02-4f08-bd7a-9973ccaf9a64",
+    "id": "3951cbbe-5dfe-4228-b1d1-2fc6a6a7271a",
     "parent_ids": [
-      "2c24bf32-dc56-400d-b0a1-d4d27cb04049"
+      "f81442b8-78d1-4d73-b346-b4fa500796fc"
     ],
-    "generation": 13,
-    "seed_tag": "mutated_8454"
+    "generation": 11,
+    "seed_tag": "mutated_9288"
   }
 }

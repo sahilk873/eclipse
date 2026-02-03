@@ -3,15 +3,15 @@
     "info_mode": "coarse_bins",
     "bins": [
       [
-        30.0,
+        20.0,
         "bin_1"
       ],
       [
-        70.0,
+        60.0,
         "bin_2"
       ],
       [
-        120.0,
+        140.0,
         "bin_3"
       ]
     ]
@@ -19,8 +19,8 @@
   "service_policy": {
     "service_rule": "fifo",
     "params": {
-      "a": 4.5,
-      "b": 0.2
+      "a": 2.1,
+      "b": 0.35
     }
   },
   "redirect_exit_policy": {
@@ -28,16 +28,16 @@
     "redirect_mode": "combined",
     "reneging_enabled": true,
     "params": {
-      "risk_threshold": 0.66,
-      "congestion_threshold": 10.0
+      "risk_threshold": 0.4,
+      "congestion_threshold": 9.0
     }
   },
   "meta": {
-    "id": "17fdbd92-0d7f-4d97-b9fe-734c724ebe36",
+    "id": "3736046f-3946-4c33-bb1f-8ac08595aea7",
     "parent_ids": [
-      "1d6e4f8b-5c7a-41d9-9f12-2b3a6c9e0d44"
+      "a5c3e2f4-7b9d-4a11-8c2e-0f9a1b2c3d4e"
     ],
-    "generation": 4,
+    "generation": 5,
     "seed_tag": "mutated_3669"
   }
 }

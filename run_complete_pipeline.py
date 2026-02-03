@@ -630,12 +630,12 @@ def load_config(config_file: Optional[str]) -> Dict[str, Any]:
         "population_size": 100,
         "evolution_episodes": 50,
         "elite_size": 10,
-        # Convergence suite
-        "run_convergence_suite": False,  # Disabled by default for speed
-        "convergence_runs": 3,
-        "convergence_generations": 10,
-        "convergence_population": 20,
-        "convergence_episodes": 30,
+        # Convergence suite (tuned for methods paper: more seeds, longer runs)
+        "run_convergence_suite": False,
+        "convergence_runs": 5,
+        "convergence_generations": 20,
+        "convergence_population": 50,
+        "convergence_episodes": 50,
         # Robustness
         "run_robustness": False,  # Disabled by default for speed
         "robustness_top_k": 3,
@@ -692,6 +692,14 @@ def _merge_yaml_evolution_config(config: Dict[str, Any]) -> None:
             config["run_robustness"] = pipeline["run_robustness"]
         if pipeline.get("run_ablations") is not None:
             config["run_ablations"] = pipeline["run_ablations"]
+        if pipeline.get("convergence_runs") is not None:
+            config["convergence_runs"] = pipeline["convergence_runs"]
+        if pipeline.get("convergence_generations") is not None:
+            config["convergence_generations"] = pipeline["convergence_generations"]
+        if pipeline.get("convergence_population") is not None:
+            config["convergence_population"] = pipeline["convergence_population"]
+        if pipeline.get("convergence_episodes") is not None:
+            config["convergence_episodes"] = pipeline["convergence_episodes"]
     except Exception:
         pass
 
@@ -730,11 +738,16 @@ Examples:
     parser.add_argument("--use-llm", action="store_true", help="Use LLM mutation")
     parser.add_argument("--llm-api-key", type=str, help="OpenAI API key")
     parser.add_argument(
-        "--generations", type=int, default=20, help="Evolution generations"
+        "--generations",
+        type=int,
+        default=None,
+        help="Evolution generations (default: use config, typically 30)",
     )
-    parser.add_argument("--population", type=int, default=50, help="Population size")
     parser.add_argument(
-        "--episodes", type=int, default=50, help="Episodes per evaluation"
+        "--population", type=int, default=None, help="Population size (default: use config)"
+    )
+    parser.add_argument(
+        "--episodes", type=int, default=None, help="Episodes per evaluation (default: use config)"
     )
 
     args = parser.parse_args()
@@ -743,9 +756,12 @@ Examples:
     config = load_config(args.config)
     config["results_dir"] = args.results
     config["base_seed"] = args.seed
-    config["evolution_generations"] = args.generations
-    config["population_size"] = args.population
-    config["evolution_episodes"] = args.episodes
+    if args.generations is not None:
+        config["evolution_generations"] = args.generations
+    if args.population is not None:
+        config["population_size"] = args.population
+    if args.episodes is not None:
+        config["evolution_episodes"] = args.episodes
 
     if args.full_pipeline:
         config["run_convergence_suite"] = True

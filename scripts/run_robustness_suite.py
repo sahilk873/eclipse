@@ -243,12 +243,41 @@ def analyze_robustness(mechanism_results: Dict[str, Any]) -> Dict[str, Any]:
         robustness_scores[mechanism_id] = robustness_score
         mechanism_rankings[mechanism_id] = performance_changes
 
+    # Per-mechanism worst-case fitness degradation (for methods paper)
+    per_mechanism_robustness = {}
+    for mechanism_id, results in mechanism_results.items():
+        shift_results = results["shift_results"]
+        nominal_result = shift_results.get("nominal", {})
+        if not nominal_result.get("success", False):
+            continue
+        nominal_fitness = nominal_result["evaluation"].get("fitness")
+        if nominal_fitness is None:
+            continue
+        fitnesses = [nominal_fitness]
+        for name, sr in shift_results.items():
+            if name != "nominal" and sr.get("success") and sr.get("evaluation"):
+                f = sr["evaluation"].get("fitness")
+                if f is not None:
+                    fitnesses.append(f)
+        min_fitness = min(fitnesses)
+        worst_case_degradation = nominal_fitness - min_fitness
+        seed_tag = results.get("mechanism", {}).get("meta", {}).get("seed_tag", mechanism_id[:8])
+        per_mechanism_robustness[mechanism_id] = {
+            "seed_tag": seed_tag,
+            "nominal_fitness": nominal_fitness,
+            "min_fitness_across_shifts": min_fitness,
+            "worst_case_fitness_degradation": worst_case_degradation,
+            "feasible_scenarios": sum(1 for s in shift_results.values() if s.get("success")),
+            "total_scenarios": len(shift_results),
+        }
+
     # Rank mechanisms by robustness
     sorted_by_robustness = sorted(robustness_scores.items(), key=lambda x: x[1])
 
     return {
         "robustness_scores": robustness_scores,
         "mechanism_rankings": mechanism_rankings,
+        "per_mechanism_robustness": per_mechanism_robustness,
         "sorted_mechanisms": sorted_by_robustness,
         "most_robust": sorted_by_robustness[0] if sorted_by_robustness else None,
         "least_robust": sorted_by_robustness[-1] if sorted_by_robustness else None,

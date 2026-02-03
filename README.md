@@ -153,6 +153,12 @@ Validation: `mechanisms.schema.validate_mechanism(mechanism)`.
 - Opacity or partial disclosure (e.g. coarse_bins or none) emerges in multiple seeds.  
 - Performance remains strong under at least 2 robustness shifts (λ ±25%, heavier service tail, more high-risk, or stricter patience).
 
+## Limitations
+
+- High variance across seeds; report uses mean ± 95% CI when multiple runs available.
+- Simulation parameters are idealized; real EDs vary.
+- Full pipeline (30 gen, 5 seeds, robustness, ablations) is computationally intensive.
+
 ## Citing
 
 If you use ECLIPSE in your research, please cite it. A `CITATION.cff` file is included; you can also use:

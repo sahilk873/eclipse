@@ -3,32 +3,40 @@
     "info_mode": "coarse_bins",
     "bins": [
       [
-        84.5,
+        25.0,
         "bin_1"
       ],
       [
-        169.0,
+        60.0,
         "bin_2"
+      ],
+      [
+        100.0,
+        "bin_3"
+      ],
+      [
+        160.0,
+        "bin_4"
       ]
     ]
   },
   "service_policy": {
-    "service_rule": "severity_priority"
+    "service_rule": "fifo"
   },
   "redirect_exit_policy": {
-    "redirect_low_risk": false,
-    "redirect_mode": "none",
+    "redirect_low_risk": true,
+    "redirect_mode": "congestion_cutoff",
     "reneging_enabled": true,
     "params": {
-      "congestion_threshold": 1.8
+      "congestion_threshold": 3.0
     }
   },
   "meta": {
-    "id": "b5a6af8d-ed65-4d30-9ea4-788de20bb91c",
+    "id": "b2e4d6f8-3c1a-4b5d-9e7f-6a2c8b0d9e22",
     "parent_ids": [
-      "272ca545-e0f4-488e-92fc-7bd888568f15"
+      "54a181d8-ac40-4a2c-8433-eaf690ea9e44"
     ],
     "generation": 4,
-    "seed_tag": "mutated_3215"
+    "seed_tag": "coarse_congest_002"
   }
 }
