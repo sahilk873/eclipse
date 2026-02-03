@@ -42,8 +42,8 @@ dependencies = [
 llm = ["openai>=1.55"]
 
 [project.urls]
-Repository = "https://github.com/your-org/ECLIPSE"
-Documentation = "https://github.com/your-org/ECLIPSE#readme"
+Repository = "https://github.com/sahilk873/eclipse"
+Documentation = "https://github.com/sahilk873/eclipse#readme"
 
 [tool.setuptools.packages.find]
 where = ["."]

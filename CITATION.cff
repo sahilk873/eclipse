@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: "ECLIPSE"
     given-names: "Contributors"
-url: "https://github.com/your-org/ECLIPSE"
-repository-code: "https://github.com/your-org/ECLIPSE"
+url: "https://github.com/sahilk873/eclipse"
+repository-code: "https://github.com/sahilk873/eclipse"
 keywords:
   - emergency department
   - triage
