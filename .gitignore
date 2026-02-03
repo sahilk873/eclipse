@@ -21,4 +21,5 @@ Untitled
 # Logs and checkpoints may contain API keys from config dumps
 results/logs/
 results/checkpoints/
+results/transfer_results.json
 

@@ -1,4 +1,4 @@
-"""Six baseline mechanism definitions (valid against new schema)."""
+"""Seven baseline mechanism definitions (valid against new schema)."""
 
 from typing import Any
 
@@ -110,6 +110,24 @@ BASELINE_6: dict[str, Any] = {
     },
 }
 
+# 7. FAHP-MAUT-inspired: composite utility of acuity + wait (Ashour & Kremer 2012).
+# Approximates their multi-attribute utility with hybrid rule: score = a*risk + b*wait.
+BASELINE_7: dict[str, Any] = {
+    "info_policy": {"info_mode": "exact"},
+    "service_policy": {"service_rule": "hybrid", "params": {"a": 2.0, "b": 0.15}},
+    "redirect_exit_policy": {
+        "redirect_low_risk": False,
+        "redirect_mode": "none",
+        "reneging_enabled": True,
+    },
+    "meta": {
+        "id": create_mechanism_id(),
+        "parent_ids": [],
+        "generation": 0,
+        "seed_tag": "baseline",
+    },
+}
+
 BASELINES: list[dict[str, Any]] = [
     BASELINE_1,
     BASELINE_2,
@@ -117,6 +135,7 @@ BASELINES: list[dict[str, Any]] = [
     BASELINE_4,
     BASELINE_5,
     BASELINE_6,
+    BASELINE_7,
 ]
 
 # Validate all baselines
@@ -132,11 +151,12 @@ BASELINE_NAMES = [
     "Severity_always_admit_no_info",
     "Hybrid_always_admit_coarse_info",
     "Risk_threshold_gating_no_exact_info",
+    "FAHP_MAUT_inspired",
 ]
 
 
 def get_baseline(index: int) -> dict[str, Any]:
-    """Return baseline mechanism by index (0..5)."""
+    """Return baseline mechanism by index (0..6)."""
     if 0 <= index < len(BASELINES):
         return BASELINES[index]
     return BASELINES[0]

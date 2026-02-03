@@ -390,7 +390,7 @@ class TestBaselines(unittest.TestCase):
 
         # Test we have baseline mechanisms
         self.assertGreater(len(BASELINES), 0)
-        self.assertEqual(len(BASELINES), 6)  # Should be 6 baselines
+        self.assertEqual(len(BASELINES), 7)  # Should be 7 baselines
 
         # Test each baseline is valid
         for i, baseline in enumerate(BASELINES):
@@ -472,6 +472,221 @@ class TestLLMMutation(unittest.TestCase):
         print("✅ LLM mutation with mock API test PASSED")
 
 
+class TestPipeline(unittest.TestCase):
+    """Test pipeline components and internal consistency."""
+
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+        self.temp_path = Path(self.temp_dir)
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
+
+    def test_pipeline_config_load_yaml(self):
+        """Pipeline load_config accepts YAML (config/default.yaml)."""
+        from run_complete_pipeline import load_config
+        config = load_config("config/default.yaml")
+        self.assertIsInstance(config, dict)
+        self.assertIn("config_file", config)
+        self.assertIn("results_dir", config)
+        # Merged from YAML pipeline section
+        self.assertIn("run_transfer_evaluation", config)
+        print("   Pipeline YAML config load OK")
+
+    def test_pipeline_config_load_json(self):
+        """Pipeline load_config accepts JSON override."""
+        from run_complete_pipeline import load_config
+        json_path = self.temp_path / "override.json"
+        json_path.write_text('{"results_dir": "custom_results", "base_seed": 42}')
+        config = load_config(str(json_path))
+        self.assertEqual(config.get("results_dir"), "custom_results")
+        self.assertEqual(config.get("base_seed"), 42)
+        print("   Pipeline JSON config load OK")
+
+    def test_alternate_configs_exist_and_load(self):
+        """Alternate configs (high_volume, higher_acuity, low_resource) exist and load."""
+        from eval.run_episodes import load_config
+        for name, expected_lambda, expected_servers in [
+            ("default", 4.0, 3),
+            ("high_volume", 6.0, 5),
+            ("higher_acuity", 4.0, 3),
+            ("low_resource", 2.0, 2),
+        ]:
+            path = project_root / "config" / ("default.yaml" if name == "default" else f"{name}.yaml")
+            if not path.exists():
+                self.skipTest(f"Config {name} not found")
+            params = load_config(str(path))
+            self.assertEqual(params.get("lambda"), expected_lambda, f"{name} lambda")
+            self.assertEqual(params.get("n_servers"), expected_servers, f"{name} n_servers")
+        # higher_acuity risk_mix
+        params_acuity = load_config(str(project_root / "config" / "higher_acuity.yaml"))
+        self.assertEqual(params_acuity.get("risk_mix", {}).get("critical"), 0.15)
+        print("   Alternate configs load OK")
+
+    def test_baselines_run_all_seven(self):
+        """Run baselines produces 7 rows and all baseline names match."""
+        from eval.run_baselines import main as run_baselines
+        from baselines.definitions import BASELINE_NAMES
+        run_baselines(
+            n_episodes=2,
+            config_path=str(project_root / "config" / "default.yaml"),
+            results_dir=str(self.temp_path),
+            base_seed=0,
+        )
+        csv_path = self.temp_path / "baselines_results.csv"
+        self.assertTrue(csv_path.exists(), "baselines_results.csv should exist")
+        import csv
+        with open(csv_path) as f:
+            rows = list(csv.DictReader(f))
+        self.assertEqual(len(rows), 7, "Should have 7 baselines")
+        names_in_csv = {r["name"] for r in rows}
+        for i, expected_name in enumerate(BASELINE_NAMES):
+            self.assertIn(expected_name, names_in_csv, f"Baseline {expected_name} in CSV")
+        print("   Baselines run (7) OK")
+
+    def test_transfer_evaluation_option_a(self):
+        """Transfer evaluation Option A runs and writes transfer_results.json."""
+        from scripts.run_transfer_evaluation import run_transfer_evaluation
+        from baselines.definitions import BASELINES
+        # Minimal evolution_result with one mechanism
+        best = dict(BASELINES[0])
+        best["meta"] = best.get("meta", {}) or {}
+        best["meta"]["id"] = "test-mech-id"
+        evolution_result = {"best_mechanism": best, "best_fitness": 1.0, "generations": 0}
+        (self.temp_path / "evolution_result.json").write_text(json.dumps(evolution_result, indent=2))
+        out = run_transfer_evaluation(
+            results_dir=str(self.temp_path),
+            evolution_results_path=str(self.temp_path / "evolution_result.json"),
+            episodes=2,
+            base_seed=0,
+            run_evolution_on=None,
+        )
+        self.assertIn("evaluations", out)
+        self.assertIn("transfer_table", out)
+        self.assertIn("summary", out)
+        self.assertGreaterEqual(len(out["evaluations"]), 4)  # default, high_volume, higher_acuity, low_resource
+        tr_path = self.temp_path / "transfer_results.json"
+        self.assertTrue(tr_path.exists())
+        data = json.loads(tr_path.read_text())
+        self.assertEqual(len(data["transfer_table"]), len(out["evaluations"]))
+        print("   Transfer evaluation Option A OK")
+
+    def test_evaluation_dimensions_external_validation_beats(self):
+        """Evaluation dimensions external_validation computes 'evolved beats X of N' without summary."""
+        from eval.evaluation_dimensions import get_dimension_evidence, EVALUATION_DIMENSIONS
+        report = {
+            "baseline_comparison": {
+                "baseline_table": [
+                    {"name": "A", "fitness": 1.0},
+                    {"name": "B", "fitness": 2.0},
+                    {"name": "C", "fitness": 3.0},
+                ],
+                "num_baselines": 3,
+                "best_baseline_fitness": 3.0,
+            },
+            "convergence_analysis": {"best_overall_fitness": 2.5},
+            "summary": {},  # empty: dimensions must not rely on it
+        }
+        evidence = get_dimension_evidence(report)
+        self.assertIn("external_validation", evidence)
+        summary = evidence["external_validation"].get("summary") or ""
+        self.assertIn("evolved beats 2 of 3 baselines", summary)
+        self.assertEqual(len(evidence), len(EVALUATION_DIMENSIONS))
+        print("   Evaluation dimensions external_validation OK")
+
+    def test_analyze_transfer_results_numeric_guard(self):
+        """_analyze_transfer_results skips non-numeric values in summary_line."""
+        from scripts.make_report import _analyze_transfer_results
+        transfer_data = {
+            "transfer_table": [],
+            "summary": {
+                "best_from_default_on_alternates": {
+                    "default": 5.0,
+                    "high_volume": "bad",  # non-numeric
+                    "higher_acuity": 4.5,
+                },
+            },
+            "evaluations": [],
+        }
+        out = _analyze_transfer_results(transfer_data)
+        self.assertIn("summary_line", out)
+        self.assertIn("default: 5.00", out["summary_line"])
+        self.assertIn("higher_acuity: 4.50", out["summary_line"])
+        self.assertNotIn("bad", out["summary_line"])
+        print("   Transfer analyze numeric guard OK")
+
+    def test_report_transfer_analysis_section(self):
+        """Generate report with transfer_results.json produces transfer_analysis."""
+        from scripts.make_report import generate_comprehensive_report, _analyze_transfer_results
+        (self.temp_path / "transfer_results.json").write_text(json.dumps({
+            "evaluations": [{"train_config": "default", "test_config": "default", "fitness": 3.0, "feasible": True}],
+            "transfer_table": [{"train_config": "default", "test_config": "default", "fitness": 3.0, "feasible": True}],
+            "summary": {"best_from_default_on_alternates": {"default": 3.0}},
+            "config": {},
+        }))
+        report = generate_comprehensive_report(str(self.temp_path), include_plots=False)
+        self.assertIn("transfer_analysis", report)
+        self.assertNotIn("error", report["transfer_analysis"])
+        self.assertIn("transfer_table", report["transfer_analysis"])
+        self.assertIn("summary_line", report["transfer_analysis"])
+        print("   Report transfer_analysis section OK")
+
+    def test_evolution_short_run(self):
+        """Evolution runs for 2 generations and returns best_mechanism and best_fitness."""
+        from evolution.evolve import evolve_mechanisms
+        result = evolve_mechanisms(
+            generations=2,
+            population_size=5,
+            episodes_per_mechanism=2,
+            elite_size=2,
+            config_path=str(project_root / "config" / "default.yaml"),
+            results_dir=str(self.temp_path),
+            base_seed=99,
+            llm_mutate=None,
+            llm_fraction=0.0,
+            run_id="test_evolution",
+        )
+        self.assertIn("best_mechanism", result)
+        self.assertIn("best_fitness", result)
+        self.assertIn("convergence_data", result)
+        self.assertEqual(len(result["convergence_data"]), 2)
+        if result["best_mechanism"]:
+            self.assertIn("info_policy", result["best_mechanism"])
+        print("   Evolution short run OK")
+
+    def test_convergence_suite_import(self):
+        """Convergence suite module imports and run_convergence_suite is callable."""
+        from scripts.run_convergence_suite import run_convergence_suite
+        self.assertTrue(callable(run_convergence_suite))
+        print("   Convergence suite import OK")
+
+    def test_robustness_suite_import(self):
+        """Robustness suite module imports and evaluate_baselines_and_evolved_mechanisms is callable."""
+        from scripts.run_robustness_suite import evaluate_baselines_and_evolved_mechanisms
+        self.assertTrue(callable(evaluate_baselines_and_evolved_mechanisms))
+        print("   Robustness suite import OK")
+
+    def test_ablation_suite_import(self):
+        """Ablation suite module imports and run_ablation_study is callable."""
+        from scripts.run_ablation_suite import run_ablation_study
+        self.assertTrue(callable(run_ablation_study))
+        print("   Ablation suite import OK")
+
+    def test_evaluation_dimensions_report_section(self):
+        """evaluation_dimensions_report_section returns dimensions and evidence for all six."""
+        from eval.evaluation_dimensions import evaluation_dimensions_report_section, EVALUATION_DIMENSIONS
+        report = {"baseline_comparison": {"num_baselines": 7}, "convergence_analysis": {}}
+        section = evaluation_dimensions_report_section(report)
+        self.assertEqual(section["dimensions"], EVALUATION_DIMENSIONS)
+        self.assertEqual(len(section["evidence"]), len(EVALUATION_DIMENSIONS))
+        for dim in EVALUATION_DIMENSIONS:
+            self.assertIn(dim, section["evidence"])
+            self.assertIn("description", section["evidence"][dim])
+            self.assertIn("addressed", section["evidence"][dim])
+        print("   Evaluation dimensions report section OK")
+
+
 class TestConfig(unittest.TestCase):
     """Test configuration components."""
 
@@ -516,6 +731,7 @@ def run_all_tests():
         TestBaselines,
         TestLLMMutation,
         TestConfig,
+        TestPipeline,
     ]
 
     for test_class in test_classes:

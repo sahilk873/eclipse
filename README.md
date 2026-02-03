@@ -27,7 +27,7 @@ ECLIPSE/
 ├── sim/                    # Discrete-event simulator
 ├── mechanisms/            # Mechanism schema, validation, mutation
 ├── evolution/              # Selection, reproduction, LLM mutation
-├── baselines/              # Six baseline mechanisms
+├── baselines/              # Seven baseline mechanisms (including FAHP-MAUT–inspired)
 ├── eval/                   # run_episodes, run_baselines, run_evolution, run_robustness, run_ablation, plots
 ├── results/                # Output CSVs, JSONs, figures
 ├── scripts/                # CLI entrypoints, make_report, run_reproducible_benchmark
@@ -45,6 +45,7 @@ See [docs/POSITIONING.md](docs/POSITIONING.md) for comparison to FAHP-MAUT triag
 **Additional documentation:**
 - [docs/CALIBRATION.md](docs/CALIBRATION.md) — Parameter grounding in ED literature
 - [docs/CLINICAL_METRICS.md](docs/CLINICAL_METRICS.md) — Metrics and clinical outcomes
+- [docs/EVALUATION_DIMENSIONS.md](docs/EVALUATION_DIMENSIONS.md) — Generalization, external validation, robustness, clinical plausibility, failure modes, transparency
 
 ## Reproducibility
 
@@ -145,6 +146,7 @@ Validation: `mechanisms.schema.validate_mechanism(mechanism)`.
 4. Severity priority + always admit + no info  
 5. Hybrid priority (fixed weights) + always admit + coarse info  
 6. Risk-threshold gating (ESI-like): redirect low risk when load high, no exact wait info  
+7. **FAHP-MAUT–inspired** (Ashour & Kremer 2012): fixed hybrid priority (acuity + wait weights) approximating their composite utility.  
 
 ## Acceptance criteria
 

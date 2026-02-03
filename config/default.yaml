@@ -72,6 +72,8 @@ pipeline:
   run_convergence_suite: true
   run_robustness: true
   run_ablations: true
+  run_transfer_evaluation: false   # Option A/B: evaluate on alternate configs
+  transfer_run_evolution_on: []    # e.g. [high_volume] for Option B
   convergence_runs: 5         # seeds for statistical validity
   convergence_generations: 20 # generations per run (>=20 for methods paper)
   convergence_population: 50  # population size per convergence run

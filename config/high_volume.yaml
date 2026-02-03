@@ -1,0 +1,69 @@
+# ECLIPSE high-volume ED setting (external setting for transfer evaluation)
+# Same as default except higher arrival rate and more servers
+sim:
+  T: 480
+  lambda: 6.0   # higher volume
+  n_servers: 5  # scaled for volume
+  Qmax: 20
+  service:
+    critical: { dist: lognormal, mean: 30, std: 15 }
+    urgent: { dist: lognormal, mean: 20, std: 10 }
+    low: { dist: lognormal, mean: 15, std: 8 }
+  deterioration:
+    enabled: true
+    critical_delay_min: 15
+    hazard_base: 0.01
+    hazard_per_min: 0.002
+  patience:
+    critical: 120
+    urgent: 60
+    low: 30
+  risk_mix:
+    critical: 0.1
+    urgent: 0.3
+    low: 0.6
+  benefit_per_class:
+    critical: 100
+    urgent: 50
+    low: 20
+  c_wait: 0.5
+
+constraints:
+  missed_critical_epsilon: 0.02
+  critical_TTC_minutes: 30
+  critical_TTC_exceed_pct: 0.05
+
+fitness:
+  A: 100
+  B: 1.0
+  C: 0.1
+  D: 2.0
+  E: 0.5
+
+evolution:
+  N: 100
+  M: 10
+  elite_survival_rate: 0.1
+  K: 20
+  G: 30
+  n_seeds: 5
+  use_llm: true
+  llm_fraction: 0.4
+  stagnation_generations: 3
+  max_strength: 4.0
+  jitter_range: 0.35
+
+eval:
+  n_episodes_baseline: 200
+  n_episodes_ablation: 200
+
+pipeline:
+  run_convergence_suite: true
+  run_robustness: true
+  run_ablations: true
+  convergence_runs: 5
+  convergence_generations: 20
+  convergence_population: 50
+  convergence_episodes: 50
+
+results_dir: results

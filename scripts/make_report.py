@@ -10,6 +10,8 @@ from typing import Any, Dict, List, Optional
 
 from evolution.population_db import PopulationDB
 
+from eval.evaluation_dimensions import evaluation_dimensions_report_section
+
 
 def _ci95_t(values: List[float]) -> tuple[float, float]:
     """95% confidence interval using t-distribution (small-sample)."""
@@ -110,6 +112,16 @@ def generate_comprehensive_report(
     if ablation_files:
         report["ablation_analysis"] = analyze_ablation_results(ablation_files)
 
+    # Transfer evaluation (external settings: Option A and B)
+    transfer_file = results_path / "transfer_results.json"
+    if transfer_file.exists():
+        try:
+            with open(transfer_file, "r") as f:
+                transfer_data = json.load(f)
+            report["transfer_analysis"] = _analyze_transfer_results(transfer_data)
+        except Exception as e:
+            report["transfer_analysis"] = {"error": str(e)}
+
     # Statistical comparison: evolved vs best baseline (for methods paper)
     if report.get("convergence_analysis") and report.get("baseline_comparison"):
         conv = report["convergence_analysis"]
@@ -132,6 +144,9 @@ def generate_comprehensive_report(
                         else "Difference not statistically significant at α=0.05"
                     ),
                 }
+
+    # Evaluation dimensions: generalization, external validation, robustness, clinical plausibility, failure modes, transparency
+    report["evaluation_dimensions"] = evaluation_dimensions_report_section(report)
 
     # Generate summary
     report["summary"] = generate_executive_summary(report)
@@ -471,6 +486,24 @@ def analyze_pareto_results(pareto_files: List[Path]) -> Dict[str, Any]:
     return analysis
 
 
+def _analyze_transfer_results(transfer_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Build transfer_analysis section from transfer_results.json."""
+    out = {
+        "transfer_table": transfer_data.get("transfer_table", []),
+        "summary": transfer_data.get("summary", {}),
+        "evaluations": transfer_data.get("evaluations", []),
+    }
+    # One-line summary for executive summary
+    summary = transfer_data.get("summary", {})
+    by_test = summary.get("best_from_default_on_alternates", {})
+    if by_test:
+        parts = [f"{k}: {v:.2f}" for k, v in by_test.items() if v is not None and isinstance(v, (int, float))]
+        out["summary_line"] = "Best-from-default on alternates: " + "; ".join(parts)
+    if summary.get("degradation_on_high_volume_pct") is not None:
+        out["degradation_on_high_volume_pct"] = summary["degradation_on_high_volume_pct"]
+    return out
+
+
 def analyze_robustness_results(robustness_files: List[Path]) -> Dict[str, Any]:
     """Analyze robustness test results."""
 
@@ -754,7 +787,7 @@ def generate_executive_summary(report: Dict[str, Any]) -> Dict[str, Any]:
                 f"Evolved mechanism {'outperforms' if evolved_better else 'matches'} best baseline by {improvement:.4f} fitness"
             )
 
-        # Head-to-head: evolved beats X of 6 baselines
+        # Head-to-head: evolved beats X of N baselines
         if "baseline_table" in base and "best_overall_fitness" in conv:
             evolved_fit = conv["best_overall_fitness"]
             beats = sum(1 for row in base["baseline_table"] if evolved_fit > row.get("fitness", 0))
@@ -821,6 +854,16 @@ def generate_executive_summary(report: Dict[str, Any]) -> Dict[str, Any]:
                 f"Average robustness score: {score:.4f} ({'good' if score < 1.0 else 'moderate' if score < 5.0 else 'poor'})"
             )
 
+    # Transfer evaluation (external settings)
+    if report.get("transfer_analysis") and "error" not in report["transfer_analysis"]:
+        ta = report["transfer_analysis"]
+        if ta.get("summary_line"):
+            summary["key_findings"].append("Transfer: " + ta["summary_line"])
+        if ta.get("degradation_on_high_volume_pct") is not None:
+            summary["key_findings"].append(
+                f"Transfer: best-from-default degrades by {ta['degradation_on_high_volume_pct']}% on high_volume"
+            )
+
     # Component importance
     if report.get("ablation_analysis"):
         abl = report["ablation_analysis"]
@@ -834,6 +877,15 @@ def generate_executive_summary(report: Dict[str, Any]) -> Dict[str, Any]:
                 summary["key_findings"].append(
                     f"Most critical component: {top_component[0]} (average impact: {top_component[1]:.4f})"
                 )
+
+    # Evaluation dimensions (generalization, external validation, robustness, clinical plausibility, failure modes, transparency)
+    if report.get("evaluation_dimensions"):
+        ed = report["evaluation_dimensions"]
+        dims_addressed = [d for d in ed.get("dimensions", []) if ed.get("evidence", {}).get(d, {}).get("addressed")]
+        summary["evaluation_dimensions_addressed"] = dims_addressed
+        summary["key_findings"].append(
+            f"Evaluation dimensions addressed in this run: {', '.join(dims_addressed)} (see report section and docs/EVALUATION_DIMENSIONS.md)"
+        )
 
     # Practical recommendations (derived from results)
     if report.get("convergence_analysis") and report.get("baseline_comparison"):
@@ -1010,6 +1062,40 @@ Generated: {report["metadata"]["generated_at"]}
             md_content += "\n"
         if sc.get("interpretation"):
             md_content += f"- **{sc['interpretation']}**\n"
+        md_content += "\n"
+
+    # Transfer evaluation (external settings)
+    if "transfer_analysis" in report and "error" not in report.get("transfer_analysis", {}):
+        ta = report["transfer_analysis"]
+        md_content += "## Transfer Evaluation (External Settings)\n\n"
+        if ta.get("summary_line"):
+            md_content += f"- {ta['summary_line']}\n"
+        if ta.get("degradation_on_high_volume_pct") is not None:
+            md_content += f"- Best-from-default degrades by {ta['degradation_on_high_volume_pct']}% on high_volume\n"
+        if ta.get("transfer_table"):
+            md_content += "\n### Transfer Table (train_config x test_config)\n\n"
+            md_content += "| Train config | Test config | Fitness | Feasible |\n"
+            md_content += "|--------------|-------------|---------|----------|\n"
+            for row in ta["transfer_table"]:
+                train = str(row.get("train_config", ""))
+                test = str(row.get("test_config", ""))
+                fit = row.get("fitness")
+                fit_str = f"{fit:.4f}" if fit is not None else "—"
+                feas = "Yes" if row.get("feasible") else "No"
+                md_content += f"| {train} | {test} | {fit_str} | {feas} |\n"
+            md_content += "\n"
+
+    # Evaluation dimensions: generalization, external validation, robustness, clinical plausibility, failure modes, transparency
+    if "evaluation_dimensions" in report:
+        ed = report["evaluation_dimensions"]
+        md_content += "## Evaluation Dimensions\n\n"
+        md_content += "Evidence for each dimension (see `docs/EVALUATION_DIMENSIONS.md` for definitions):\n\n"
+        for dim in ed.get("dimensions", []):
+            ev = ed.get("evidence", {}).get(dim, {})
+            desc = ev.get("description", "")
+            summary_line = ev.get("summary") or ("Addressed in pipeline" if ev.get("addressed") else "No evidence in this run")
+            status = "✓" if ev.get("addressed") else "−"
+            md_content += f"- **{dim}** {status}: {desc} — {summary_line}\n"
         md_content += "\n"
 
     # Robustness

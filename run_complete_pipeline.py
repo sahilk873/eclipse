@@ -265,6 +265,37 @@ class ECLIPSEPipeline:
             self.checkpoint_data["failed_steps"].append("evolution")
             return False
 
+    def step_transfer(self) -> bool:
+        """Transfer evaluation: Option A (best-from-default on alternates) and Option B (best-from-alternate on default)."""
+        if not self.config.get("run_transfer_evaluation", False):
+            self.log("⏭️  Skipping transfer evaluation (disabled in config)")
+            return True
+
+        self.log("🔄 Running transfer evaluation (external settings)")
+        self.checkpoint_data["current_step"] = "transfer"
+
+        try:
+            from scripts.run_transfer_evaluation import run_transfer_evaluation
+
+            run_transfer_evaluation(
+                results_dir=str(self.results_dir),
+                evolution_results_path=str(self.results_dir / "evolution_result.json"),
+                episodes=self.config.get("transfer_episodes", 100),
+                base_seed=self.config["base_seed"],
+                run_evolution_on=self.config.get("transfer_run_evolution_on") or None,
+                evolution_generations=self.config.get("evolution_generations", 30),
+                evolution_population=self.config.get("population_size", 50),
+                evolution_episodes=self.config.get("evolution_episodes", 50),
+                use_llm=self.config.get("use_llm", False),
+                llm_api_key=self.config.get("llm_api_key"),
+            )
+            self.checkpoint("transfer")
+            return True
+        except Exception as e:
+            self.log(f"❌ Transfer evaluation failed: {e}", "ERROR")
+            self.checkpoint_data["failed_steps"].append("transfer")
+            return False
+
     def step_convergence(self) -> bool:
         """Step 3: Multi-run convergence analysis."""
         if not self.config.get("run_convergence_suite", False):
@@ -429,7 +460,7 @@ class ECLIPSEPipeline:
             # Create a list of mechanisms for Pareto analysis
             from baselines.definitions import BASELINES
 
-            mechanisms = [best_mechanism] + BASELINES[:5]  # Include top 5 baselines
+            mechanisms = [best_mechanism] + BASELINES  # Include all baselines
 
             # Create dummy metrics and constraints for demonstration
             # In a full implementation, this would use actual population data
@@ -549,6 +580,7 @@ class ECLIPSEPipeline:
         steps = [
             ("baselines", self.step_baselines),
             ("evolution", self.step_evolution),
+            ("transfer", self.step_transfer),
             ("convergence", self.step_convergence),
             ("robustness", self.step_robustness),
             ("ablations", self.step_ablations),
@@ -560,6 +592,7 @@ class ECLIPSEPipeline:
         for step_name, step_func in steps:
             success = step_func()
             if not success and step_name not in [
+                "transfer",
                 "convergence",
                 "robustness",
                 "ablations",
@@ -611,10 +644,21 @@ class ECLIPSEPipeline:
 
 
 def load_config(config_file: Optional[str]) -> Dict[str, Any]:
-    """Load configuration from file or defaults."""
+    """Load configuration from file or defaults. Supports .json and .yaml/.yml pipeline override configs."""
     if config_file and Path(config_file).exists():
+        path = Path(config_file)
+        suffix = path.suffix.lower()
         with open(config_file, "r") as f:
-            config = json.load(f)
+            if suffix in (".yaml", ".yml"):
+                try:
+                    import yaml
+                    config = yaml.safe_load(f) or {}
+                except ImportError:
+                    raise ImportError(
+                        "YAML config requires PyYAML. Install with: pip install pyyaml"
+                    ) from None
+            else:
+                config = json.load(f)
     else:
         config = {}
 
@@ -642,6 +686,10 @@ def load_config(config_file: Optional[str]) -> Dict[str, Any]:
         # Ablations
         "run_ablations": False,  # Disabled by default for speed
         "ablation_episodes": 200,
+        # Transfer evaluation (external settings: Option A and B)
+        "run_transfer_evaluation": False,
+        "transfer_run_evolution_on": [],  # e.g. ["high_volume"] for Option B
+        "transfer_episodes": 100,
         # LLM
         "use_llm": False,
         "llm_api_key": _get_openai_api_key(),
@@ -700,6 +748,10 @@ def _merge_yaml_evolution_config(config: Dict[str, Any]) -> None:
             config["convergence_population"] = pipeline["convergence_population"]
         if pipeline.get("convergence_episodes") is not None:
             config["convergence_episodes"] = pipeline["convergence_episodes"]
+        if pipeline.get("run_transfer_evaluation") is not None:
+            config["run_transfer_evaluation"] = pipeline["run_transfer_evaluation"]
+        if pipeline.get("transfer_run_evolution_on") is not None:
+            config["transfer_run_evolution_on"] = pipeline["transfer_run_evolution_on"]
     except Exception:
         pass
 

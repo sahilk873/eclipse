@@ -42,7 +42,7 @@ Design trade-offs: LLM mutation requires an API key and adds latency; we support
 
 # Research Impact Statement
 
-- **Benchmarks**: Evolved mechanisms are evaluated against six baselines (FIFO, severity priority, hybrid, ESI-like gating) with reported fitness, feasibility, and key metrics.
+- **Benchmarks**: Evolved mechanisms are evaluated against seven baselines (FIFO, severity priority, hybrid, ESI-like gating, and an FAHP-MAUT–inspired baseline [@ashour2012]) with reported fitness, feasibility, and key metrics.
 - **Convergence and robustness**: Multi-seed convergence suite; robustness under λ ±25%, heavier service tail, more high-risk mix, reduced patience.
 - **Ablation**: Component importance analysis identifies which mechanism parts (info disclosure, redirect, service rule) matter most.
 - **Reproducibility**: Fixed seeds, `reproducibility_info.json`, single-command benchmark script.
