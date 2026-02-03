@@ -1,0 +1,23 @@
+{
+  "info_policy": {
+    "info_mode": "none"
+  },
+  "service_policy": {
+    "service_rule": "severity_priority"
+  },
+  "redirect_exit_policy": {
+    "redirect_low_risk": true,
+    "redirect_mode": "combined",
+    "params": {
+      "risk_threshold": 0.3,
+      "congestion_threshold": 15
+    },
+    "reneging_enabled": true
+  },
+  "meta": {
+    "id": "6e4a1b6a-8491-4614-9b44-5c6698aebd92",
+    "parent_ids": [],
+    "generation": 0,
+    "seed_tag": "baseline"
+  }
+}

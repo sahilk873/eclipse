@@ -1,0 +1,37 @@
+{
+  "info_policy": {
+    "info_mode": "coarse_bins",
+    "bins": [
+      [
+        30,
+        "low_wait"
+      ],
+      [
+        90,
+        "medium_wait"
+      ],
+      [
+        180,
+        "high_wait"
+      ]
+    ]
+  },
+  "service_policy": {
+    "service_rule": "hybrid",
+    "params": {
+      "a": 1.0,
+      "b": 0.1
+    }
+  },
+  "redirect_exit_policy": {
+    "redirect_low_risk": false,
+    "redirect_mode": "none",
+    "reneging_enabled": true
+  },
+  "meta": {
+    "id": "6c7d6193-11a1-423f-b8fd-9cb975e2d0e0",
+    "parent_ids": [],
+    "generation": 0,
+    "seed_tag": "baseline"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "info_policy": {
+    "info_mode": "coarse_bins",
+    "bins": [
+      [
+        25.0,
+        "low"
+      ],
+      [
+        999.0,
+        "high"
+      ],
+      [
+        1033.9,
+        "bin_3"
+      ]
+    ]
+  },
+  "service_policy": {
+    "service_rule": "hybrid",
+    "params": {
+      "a": 2.5,
+      "b": 0.1
+    }
+  },
+  "redirect_exit_policy": {
+    "redirect_low_risk": false,
+    "redirect_mode": "none",
+    "reneging_enabled": true,
+    "params": {
+      "congestion_threshold": 3.5
+    }
+  },
+  "meta": {
+    "id": "4eee5a49-fd02-4f08-bd7a-9973ccaf9a64",
+    "parent_ids": [
+      "2c24bf32-dc56-400d-b0a1-d4d27cb04049"
+    ],
+    "generation": 13,
+    "seed_tag": "mutated_8454"
+  }
+}

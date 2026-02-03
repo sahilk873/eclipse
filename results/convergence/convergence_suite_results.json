@@ -1,0 +1,550 @@
+{
+  "config": {
+    "num_runs": 3,
+    "generations_per_run": 10,
+    "population_size": 20,
+    "episodes_per_mechanism": 30,
+    "base_seed": 0,
+    "use_llm": true
+  },
+  "run_results": [
+    {
+      "run_id": 0,
+      "seed": 0,
+      "identifier": "convergence_run_0",
+      "result": {
+        "best_mechanism": {
+          "info_policy": {
+            "info_mode": "exact"
+          },
+          "service_policy": {
+            "service_rule": "hybrid",
+            "params": {
+              "a": 2.39,
+              "b": 0.15
+            }
+          },
+          "redirect_exit_policy": {
+            "redirect_low_risk": true,
+            "redirect_mode": "risk_cutoff",
+            "reneging_enabled": true,
+            "params": {
+              "risk_threshold": 0.5
+            }
+          },
+          "meta": {
+            "id": "d4735047-8bcd-48b9-b73c-93718cc61b7b",
+            "parent_ids": [],
+            "generation": 0,
+            "seed_tag": "random"
+          }
+        },
+        "best_fitness": 6.061547425621226,
+        "convergence_data": [
+          {
+            "generation": 0,
+            "best_fitness": 6.061547425621226,
+            "best_feasible": true,
+            "avg_fitness": 3.906430773160358,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.0
+          },
+          {
+            "generation": 1,
+            "best_fitness": 5.987477647689242,
+            "best_feasible": true,
+            "avg_fitness": 5.455222729184831,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.0
+          },
+          {
+            "generation": 2,
+            "best_fitness": 5.744144373726154,
+            "best_feasible": true,
+            "avg_fitness": 5.186839096054546,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.0
+          },
+          {
+            "generation": 3,
+            "best_fitness": 5.0691919711101745,
+            "best_feasible": true,
+            "avg_fitness": 3.9650157021127432,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.0
+          },
+          {
+            "generation": 4,
+            "best_fitness": 4.626748488576763,
+            "best_feasible": true,
+            "avg_fitness": 4.30766461019201,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.5
+          },
+          {
+            "generation": 5,
+            "best_fitness": 5.139871028991929,
+            "best_feasible": true,
+            "avg_fitness": 4.54541265523868,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.35
+          },
+          {
+            "generation": 6,
+            "best_fitness": 5.538020307110908,
+            "best_feasible": true,
+            "avg_fitness": 5.037380570093005,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.215
+          },
+          {
+            "generation": 7,
+            "best_fitness": 5.371581161001378,
+            "best_feasible": true,
+            "avg_fitness": 4.351161003091867,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.215
+          },
+          {
+            "generation": 8,
+            "best_fitness": 4.27970007854892,
+            "best_feasible": true,
+            "avg_fitness": 3.8756797243246304,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.215
+          },
+          {
+            "generation": 9,
+            "best_fitness": 4.645916226715741,
+            "best_feasible": true,
+            "avg_fitness": 4.125847938484894,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.0935000000000001
+          }
+        ],
+        "final_population_size": 20,
+        "generations": 10,
+        "adaptive_state": {
+          "current_strength": 1.0935000000000001,
+          "generations_without_improvement": 0,
+          "last_best_fitness": 4.645916226715741,
+          "fitness_trend": "improving",
+          "major_stagnation_detected": false,
+          "mode_swap_probability": 0.2
+        },
+        "run_id": "convergence_run_0"
+      },
+      "success": true
+    },
+    {
+      "run_id": 1,
+      "seed": 1000,
+      "identifier": "convergence_run_1",
+      "result": {
+        "best_mechanism": {
+          "info_policy": {
+            "info_mode": "coarse_bins",
+            "bins": [
+              [
+                30.0,
+                "bin_1"
+              ],
+              [
+                70.0,
+                "bin_2"
+              ],
+              [
+                120.0,
+                "bin_3"
+              ]
+            ]
+          },
+          "service_policy": {
+            "service_rule": "fifo",
+            "params": {
+              "a": 4.5,
+              "b": 0.2
+            }
+          },
+          "redirect_exit_policy": {
+            "redirect_low_risk": true,
+            "redirect_mode": "combined",
+            "reneging_enabled": true,
+            "params": {
+              "risk_threshold": 0.66,
+              "congestion_threshold": 10.0
+            }
+          },
+          "meta": {
+            "id": "17fdbd92-0d7f-4d97-b9fe-734c724ebe36",
+            "parent_ids": [
+              "1d6e4f8b-5c7a-41d9-9f12-2b3a6c9e0d44"
+            ],
+            "generation": 4,
+            "seed_tag": "mutated_3669"
+          }
+        },
+        "best_fitness": 5.819861297150656,
+        "convergence_data": [
+          {
+            "generation": 0,
+            "best_fitness": 5.24261761297395,
+            "best_feasible": true,
+            "avg_fitness": 4.2649286120968055,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.0
+          },
+          {
+            "generation": 1,
+            "best_fitness": 5.248977462000152,
+            "best_feasible": true,
+            "avg_fitness": 4.708105274539614,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.0
+          },
+          {
+            "generation": 2,
+            "best_fitness": 5.690260236782236,
+            "best_feasible": true,
+            "avg_fitness": 5.154652829337179,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.9
+          },
+          {
+            "generation": 3,
+            "best_fitness": 5.500842156662539,
+            "best_feasible": true,
+            "avg_fitness": 4.534167792299639,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.9
+          },
+          {
+            "generation": 4,
+            "best_fitness": 5.021285943379677,
+            "best_feasible": true,
+            "avg_fitness": 3.979779690977246,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.9
+          },
+          {
+            "generation": 5,
+            "best_fitness": 5.819861297150656,
+            "best_feasible": true,
+            "avg_fitness": 5.321018358640684,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.81
+          },
+          {
+            "generation": 6,
+            "best_fitness": 5.525032021350861,
+            "best_feasible": true,
+            "avg_fitness": 5.085438729264039,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.81
+          },
+          {
+            "generation": 7,
+            "best_fitness": 5.320445851817311,
+            "best_feasible": true,
+            "avg_fitness": 4.745556619620885,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.81
+          },
+          {
+            "generation": 8,
+            "best_fitness": 5.64615269685823,
+            "best_feasible": true,
+            "avg_fitness": 5.195228796142907,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.7290000000000001
+          },
+          {
+            "generation": 9,
+            "best_fitness": 5.358024948779391,
+            "best_feasible": true,
+            "avg_fitness": 4.581398989301237,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.7290000000000001
+          }
+        ],
+        "final_population_size": 20,
+        "generations": 10,
+        "adaptive_state": {
+          "current_strength": 0.7290000000000001,
+          "generations_without_improvement": 1,
+          "last_best_fitness": 5.358024948779391,
+          "fitness_trend": "stagnant",
+          "major_stagnation_detected": false,
+          "mode_swap_probability": 0.2
+        },
+        "run_id": "convergence_run_1"
+      },
+      "success": true
+    },
+    {
+      "run_id": 2,
+      "seed": 2000,
+      "identifier": "convergence_run_2",
+      "result": {
+        "best_mechanism": {
+          "info_policy": {
+            "info_mode": "coarse_bins",
+            "bins": [
+              [
+                84.5,
+                "bin_1"
+              ],
+              [
+                169.0,
+                "bin_2"
+              ]
+            ]
+          },
+          "service_policy": {
+            "service_rule": "severity_priority"
+          },
+          "redirect_exit_policy": {
+            "redirect_low_risk": false,
+            "redirect_mode": "none",
+            "reneging_enabled": true,
+            "params": {
+              "congestion_threshold": 1.8
+            }
+          },
+          "meta": {
+            "id": "b5a6af8d-ed65-4d30-9ea4-788de20bb91c",
+            "parent_ids": [
+              "272ca545-e0f4-488e-92fc-7bd888568f15"
+            ],
+            "generation": 4,
+            "seed_tag": "mutated_3215"
+          }
+        },
+        "best_fitness": 6.07220538581954,
+        "convergence_data": [
+          {
+            "generation": 0,
+            "best_fitness": 4.989257305320107,
+            "best_feasible": true,
+            "avg_fitness": 3.3328942429907045,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.0
+          },
+          {
+            "generation": 1,
+            "best_fitness": 4.790520573643885,
+            "best_feasible": true,
+            "avg_fitness": 4.098809242499569,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 1.0
+          },
+          {
+            "generation": 2,
+            "best_fitness": 5.253513772380682,
+            "best_feasible": true,
+            "avg_fitness": 4.670362497449391,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.9
+          },
+          {
+            "generation": 3,
+            "best_fitness": 5.513199833736112,
+            "best_feasible": true,
+            "avg_fitness": 4.6458168386082646,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.81
+          },
+          {
+            "generation": 4,
+            "best_fitness": 5.121484114104884,
+            "best_feasible": true,
+            "avg_fitness": 4.184999744502819,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.81
+          },
+          {
+            "generation": 5,
+            "best_fitness": 6.07220538581954,
+            "best_feasible": true,
+            "avg_fitness": 5.2766712865823475,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.7290000000000001
+          },
+          {
+            "generation": 6,
+            "best_fitness": 5.945734589750166,
+            "best_feasible": true,
+            "avg_fitness": 5.5062901168102165,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.7290000000000001
+          },
+          {
+            "generation": 7,
+            "best_fitness": 5.355519868822285,
+            "best_feasible": true,
+            "avg_fitness": 4.631174821824201,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.7290000000000001
+          },
+          {
+            "generation": 8,
+            "best_fitness": 5.274512359755937,
+            "best_feasible": true,
+            "avg_fitness": 4.521121561233777,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.7290000000000001
+          },
+          {
+            "generation": 9,
+            "best_fitness": 5.656120692552069,
+            "best_feasible": true,
+            "avg_fitness": 4.785961525059596,
+            "n_feasible": 20,
+            "population_size": 20,
+            "mutation_strength": 0.6561000000000001
+          }
+        ],
+        "final_population_size": 20,
+        "generations": 10,
+        "adaptive_state": {
+          "current_strength": 0.6561000000000001,
+          "generations_without_improvement": 0,
+          "last_best_fitness": 5.656120692552069,
+          "fitness_trend": "improving",
+          "major_stagnation_detected": false,
+          "mode_swap_probability": 0.2
+        },
+        "run_id": "convergence_run_2"
+      },
+      "success": true
+    }
+  ],
+  "convergence_analysis": {
+    "successful_runs": 3,
+    "final_fitness_stats": {
+      "mean": 5.220020622682401,
+      "min": 4.645916226715741,
+      "max": 5.656120692552069,
+      "std": 0.4238019672874179
+    },
+    "avg_correlation_between_runs": 0.0772309505507156,
+    "fitness_curves": [
+      [
+        6.061547425621226,
+        5.987477647689242,
+        5.744144373726154,
+        5.0691919711101745,
+        4.626748488576763,
+        5.139871028991929,
+        5.538020307110908,
+        5.371581161001378,
+        4.27970007854892,
+        4.645916226715741
+      ],
+      [
+        5.24261761297395,
+        5.248977462000152,
+        5.690260236782236,
+        5.500842156662539,
+        5.021285943379677,
+        5.819861297150656,
+        5.525032021350861,
+        5.320445851817311,
+        5.64615269685823,
+        5.358024948779391
+      ],
+      [
+        4.989257305320107,
+        4.790520573643885,
+        5.253513772380682,
+        5.513199833736112,
+        5.121484114104884,
+        6.07220538581954,
+        5.945734589750166,
+        5.355519868822285,
+        5.274512359755937,
+        5.656120692552069
+      ]
+    ],
+    "best_run_fitness": 5.656120692552069,
+    "worst_run_fitness": 4.645916226715741
+  },
+  "structure_analysis": {
+    "num_best_mechanisms": 3,
+    "component_percentages": {
+      "info_mode": {
+        "exact": 0.3333333333333333,
+        "coarse_bins": 0.6666666666666666
+      },
+      "service_rule": {
+        "hybrid": 0.3333333333333333,
+        "fifo": 0.3333333333333333,
+        "severity_priority": 0.3333333333333333
+      },
+      "redirect_mode": {
+        "risk_cutoff": 0.3333333333333333,
+        "combined": 0.3333333333333333,
+        "none": 0.3333333333333333
+      },
+      "redirect_low_risk": {
+        "true": 0.6666666666666666,
+        "false": 0.3333333333333333
+      },
+      "reneging_enabled": {
+        "true": 1.0
+      }
+    },
+    "most_common_components": {
+      "info_mode": {
+        "value": "coarse_bins",
+        "frequency": 0.6666666666666666
+      },
+      "service_rule": {
+        "value": "hybrid",
+        "frequency": 0.3333333333333333
+      },
+      "redirect_mode": {
+        "value": "risk_cutoff",
+        "frequency": 0.3333333333333333
+      },
+      "redirect_low_risk": {
+        "value": true,
+        "frequency": 0.6666666666666666
+      },
+      "reneging_enabled": {
+        "value": true,
+        "frequency": 1.0
+      }
+    },
+    "diversity_score": -555.5555555555555
+  }
+}

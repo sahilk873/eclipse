@@ -1,0 +1,506 @@
+{
+  "metadata": {
+    "generated_at": "2026-02-02T23:14:20.573639",
+    "results_directory": "results",
+    "run_id": null
+  },
+  "summary": {
+    "key_findings": [
+      "Best evolved mechanism achieved fitness of 6.0578",
+      "Average fitness improvement: 0.1111",
+      "Evolved mechanism outperforms best baseline by 1.0981 fitness",
+      "Evolved mechanism beats 6 of 6 baselines on fitness",
+      "Meets safety constraints at least as well as best baseline (all baselines feasible)",
+      "Pareto frontier contains 33.3% of evaluated mechanisms",
+      "Average robustness score: 19.0982 (poor)",
+      "Most critical component: no_redirect (average impact: 2.5326)"
+    ],
+    "performance_summary": {},
+    "recommendations": [
+      "Evolved mechanisms improve safety/throughput; consider LLM-guided search for similar settings.",
+      "Focus on no_redirect when designing triage (most critical component, avg impact 2.5326).",
+      "Mechanisms remain stable under arrival/load shifts; suitable for variable EDs.",
+      "Continue evolution with increased population size for better exploration",
+      "Consider multi-objective optimization to balance competing objectives"
+    ],
+    "baselines_beaten": 6
+  },
+  "convergence_analysis": {
+    "num_evolution_runs": 6,
+    "best_overall_fitness": 6.0577716449767145,
+    "avg_best_fitness": 4.46368161736378,
+    "fitness_std": 2.044555241421489,
+    "avg_generations": 8.666666666666666,
+    "convergence_patterns": {
+      "num_curves": 5,
+      "avg_final_improvement": 0.11107683951075469,
+      "convergence_consistency": 0.023169285165214687,
+      "convergence_std": 0.4841265359211177
+    }
+  },
+  "pareto_analysis": {
+    "num_pareto_analyses": 1,
+    "avg_frontier_size": 2.0,
+    "avg_total_mechanisms": 6.0,
+    "pareto_efficiency": 0.3333333333333333
+  },
+  "robustness_analysis": {
+    "num_robustness_tests": 1,
+    "total_mechanisms_tested": 6,
+    "avg_robustness_score": 19.098206097377417,
+    "best_robustness_score": 5.258768377868321,
+    "worst_robustness_score": 52.38725350484229,
+    "robustness_table": [
+      {
+        "mechanism": "mutated_8454",
+        "scenarios": {
+          "nominal": {
+            "error": "(25.0, 'low') is not in list",
+            "success": false
+          },
+          "lambda_up_25": {
+            "error": "(25.0, 'low') is not in list",
+            "success": false
+          },
+          "lambda_down_25": {
+            "error": "(25.0, 'low') is not in list",
+            "success": false
+          },
+          "heavier_service_tail": {
+            "error": "(25.0, 'low') is not in list",
+            "success": false
+          },
+          "more_high_risk": {
+            "error": "(25.0, 'low') is not in list",
+            "success": false
+          },
+          "reduced_patience": {
+            "error": "(25.0, 'low') is not in list",
+            "success": false
+          }
+        },
+        "feasible_scenarios": 0,
+        "total_scenarios": 6
+      },
+      {
+        "mechanism": "baseline",
+        "scenarios": {
+          "nominal": {
+            "fitness": 4.121518185175403,
+            "success": true
+          },
+          "lambda_up_25": {
+            "fitness": 5.1523753691551875,
+            "success": true
+          },
+          "lambda_down_25": {
+            "fitness": 3.7374244276092634,
+            "success": true
+          },
+          "heavier_service_tail": {
+            "fitness": 1.0402708665586164,
+            "success": true
+          },
+          "more_high_risk": {
+            "fitness": 2.820171244681619,
+            "success": true
+          },
+          "reduced_patience": {
+            "fitness": 4.415180427365832,
+            "success": true
+          }
+        },
+        "feasible_scenarios": 6,
+        "total_scenarios": 6
+      },
+      {
+        "mechanism": "baseline",
+        "scenarios": {
+          "nominal": {
+            "fitness": 2.5493106605016385,
+            "success": true
+          },
+          "lambda_up_25": {
+            "fitness": 2.539648718426664,
+            "success": true
+          },
+          "lambda_down_25": {
+            "fitness": 2.066670400946015,
+            "success": true
+          },
+          "heavier_service_tail": {
+            "fitness": 2.379327506480613,
+            "success": true
+          },
+          "more_high_risk": {
+            "fitness": 2.084733390584243,
+            "success": true
+          },
+          "reduced_patience": {
+            "fitness": 2.5938327401648444,
+            "success": true
+          }
+        },
+        "feasible_scenarios": 6,
+        "total_scenarios": 6
+      },
+      {
+        "mechanism": "baseline",
+        "scenarios": {
+          "nominal": {
+            "fitness": 4.704790820535518,
+            "success": true
+          },
+          "lambda_up_25": {
+            "fitness": 5.634137238633599,
+            "success": true
+          },
+          "lambda_down_25": {
+            "fitness": 3.987422599567629,
+            "success": true
+          },
+          "heavier_service_tail": {
+            "fitness": 1.8364770814188351,
+            "success": true
+          },
+          "more_high_risk": {
+            "fitness": 3.276636206791812,
+            "success": true
+          },
+          "reduced_patience": {
+            "fitness": 5.019495326237343,
+            "success": true
+          }
+        },
+        "feasible_scenarios": 6,
+        "total_scenarios": 6
+      },
+      {
+        "mechanism": "baseline",
+        "scenarios": {
+          "nominal": {
+            "fitness": 2.143527819601046,
+            "success": true
+          },
+          "lambda_up_25": {
+            "fitness": 2.135371864449598,
+            "success": true
+          },
+          "lambda_down_25": {
+            "fitness": 1.9558348182474972,
+            "success": true
+          },
+          "heavier_service_tail": {
+            "fitness": 2.1528430657907904,
+            "success": true
+          },
+          "more_high_risk": {
+            "fitness": 1.9319305746138624,
+            "success": true
+          },
+          "reduced_patience": {
+            "fitness": 2.19301582163149,
+            "success": true
+          }
+        },
+        "feasible_scenarios": 6,
+        "total_scenarios": 6
+      },
+      {
+        "mechanism": "baseline",
+        "scenarios": {
+          "nominal": {
+            "fitness": 4.8495586477340265,
+            "success": true
+          },
+          "lambda_up_25": {
+            "fitness": 5.877722562531705,
+            "success": true
+          },
+          "lambda_down_25": {
+            "fitness": 4.028395739887491,
+            "success": true
+          },
+          "heavier_service_tail": {
+            "fitness": 1.9112293464417296,
+            "success": true
+          },
+          "more_high_risk": {
+            "fitness": 3.564563761369775,
+            "success": true
+          },
+          "reduced_patience": {
+            "fitness": 5.118596942088956,
+            "success": true
+          }
+        },
+        "feasible_scenarios": 6,
+        "total_scenarios": 6
+      },
+      {
+        "mechanism": "baseline",
+        "scenarios": {
+          "nominal": {
+            "fitness": 2.360390945333252,
+            "success": true
+          },
+          "lambda_up_25": {
+            "fitness": 2.41401242709707,
+            "success": true
+          },
+          "lambda_down_25": {
+            "fitness": 1.9618024906629647,
+            "success": true
+          },
+          "heavier_service_tail": {
+            "fitness": 2.130027765054971,
+            "success": true
+          },
+          "more_high_risk": {
+            "fitness": 2.041610908531829,
+            "success": true
+          },
+          "reduced_patience": {
+            "fitness": 2.3975972187122343,
+            "success": true
+          }
+        },
+        "feasible_scenarios": 6,
+        "total_scenarios": 6
+      }
+    ],
+    "scenarios": [
+      "nominal",
+      "lambda_up_25",
+      "lambda_down_25",
+      "heavier_service_tail",
+      "more_high_risk",
+      "reduced_patience"
+    ],
+    "most_robust_mechanisms": [
+      [
+        "4eee5a49-fd02-4f08-bd7a-9973ccaf9a64",
+        -1.0
+      ]
+    ],
+    "least_robust_mechanisms": [
+      [
+        "975f63d2-7305-4c37-a9f7-b3f9939603e7",
+        52.38725350484229
+      ]
+    ]
+  },
+  "ablation_analysis": {
+    "num_ablation_studies": 1,
+    "component_studies": 1,
+    "ablation_table": [
+      {
+        "variant": "no_redirect",
+        "fitness_impact": -2.5325786785805517,
+        "description": "No patient redirection",
+        "classification": "critical"
+      },
+      {
+        "variant": "combined_redirect",
+        "fitness_impact": -2.151195535258544,
+        "description": "Combined risk and congestion-based redirection",
+        "classification": "critical"
+      },
+      {
+        "variant": "severity_priority",
+        "fitness_impact": 2.0993074522487953,
+        "description": "Severity-based prioritization",
+        "classification": "critical"
+      },
+      {
+        "variant": "no_info",
+        "fitness_impact": -1.8269123105759375,
+        "description": "No information provided to patients",
+        "classification": "critical"
+      },
+      {
+        "variant": "exact_info",
+        "fitness_impact": -1.7268056425423075,
+        "description": "Exact wait time information",
+        "classification": "critical"
+      },
+      {
+        "variant": "fifo_service",
+        "fitness_impact": -0.640448340801024,
+        "description": "FIFO service rule (no prioritization)",
+        "classification": "critical"
+      },
+      {
+        "variant": "no_reneging",
+        "fitness_impact": -0.43956643768657067,
+        "description": "No patient reneging",
+        "classification": "critical"
+      }
+    ],
+    "most_important_components": [
+      [
+        "no_redirect",
+        2.5325786785805517
+      ],
+      [
+        "combined_redirect",
+        2.151195535258544
+      ],
+      [
+        "severity_priority",
+        2.0993074522487953
+      ],
+      [
+        "no_info",
+        1.8269123105759375
+      ],
+      [
+        "exact_info",
+        1.7268056425423075
+      ]
+    ],
+    "least_important_components": [
+      [
+        "severity_priority",
+        2.0993074522487953
+      ],
+      [
+        "no_info",
+        1.8269123105759375
+      ],
+      [
+        "exact_info",
+        1.7268056425423075
+      ],
+      [
+        "fifo_service",
+        0.640448340801024
+      ],
+      [
+        "no_reneging",
+        0.43956643768657067
+      ]
+    ],
+    "most_important": [
+      "no_redirect",
+      2.5325786785805517
+    ],
+    "least_important": [
+      "no_reneging",
+      0.43956643768657067
+    ]
+  },
+  "baseline_comparison": {
+    "num_baselines": 6,
+    "feasible_baselines": 6,
+    "feasibility_rate": 1.0,
+    "best_baseline_fitness": 4.9597075422766785,
+    "avg_baseline_fitness": 3.692996832044978,
+    "fitness_range": 2.505595107558375,
+    "baseline_table": [
+      {
+        "name": "FIFO_always_admit_exact_info",
+        "fitness": 4.799514463567137,
+        "feasible": true,
+        "adverse_events_rate": 0.004564275255981228,
+        "critical_TTC_p95": 0.4918912547366264,
+        "throughput": 3.94375,
+        "mean_wait": 0.0,
+        "overload_time": 0.0
+      },
+      {
+        "name": "FIFO_always_admit_no_info",
+        "fitness": 2.4541124347183034,
+        "feasible": true,
+        "adverse_events_rate": 0.0030080981110392874,
+        "critical_TTC_p95": 0.08072779880831155,
+        "throughput": 1.625,
+        "mean_wait": 0.0,
+        "overload_time": 0.0
+      },
+      {
+        "name": "Severity_always_admit_exact_info",
+        "fitness": 4.9597075422766785,
+        "feasible": true,
+        "adverse_events_rate": 0.004241627995765932,
+        "critical_TTC_p95": 0.38881038957981234,
+        "throughput": 3.953125,
+        "mean_wait": 0.0,
+        "overload_time": 0.0
+      },
+      {
+        "name": "Severity_always_admit_no_info",
+        "fitness": 2.522210440582817,
+        "feasible": true,
+        "adverse_events_rate": 0.002674764777705954,
+        "critical_TTC_p95": 0.06330873644429313,
+        "throughput": 1.63125,
+        "mean_wait": 0.0,
+        "overload_time": 0.0
+      },
+      {
+        "name": "Hybrid_always_admit_coarse_info",
+        "fitness": 4.900225670542118,
+        "feasible": true,
+        "adverse_events_rate": 0.004241627995765932,
+        "critical_TTC_p95": 0.38217272572170996,
+        "throughput": 3.95875,
+        "mean_wait": 0.0,
+        "overload_time": 0.0
+      },
+      {
+        "name": "Risk_threshold_gating_no_exact_info",
+        "fitness": 2.522210440582817,
+        "feasible": true,
+        "adverse_events_rate": 0.002674764777705954,
+        "critical_TTC_p95": 0.06330873644429313,
+        "throughput": 1.63125,
+        "mean_wait": 0.0,
+        "overload_time": 0.0
+      }
+    ],
+    "best_baseline": {
+      "name": "Severity_always_admit_exact_info",
+      "fitness": 4.9597075422766785,
+      "feasible": "True"
+    }
+  },
+  "artifacts": {
+    "plots": [
+      "results/pareto_frontier.png",
+      "results/convergence/convergence_multi_run.png",
+      "results/evolution/convergence_convergence_seed_0.png"
+    ],
+    "data_files": [
+      "results/convergence_main_evolution.json",
+      "results/baselines_results.csv",
+      "results/evolution_result.json",
+      "results/pareto_frontier.json",
+      "results/best_mechanism_main_evolution.json",
+      "results/robustness/robustness_suite_results.json",
+      "results/checkpoints/pipeline_checkpoint.json",
+      "results/checkpoints/pipeline_final.json",
+      "results/ablations_test/ablation_study_results.json",
+      "results/convergence/convergence_suite_results.json",
+      "results/evolution/best_gen_1.json",
+      "results/evolution/best_gen_0.json",
+      "results/evolution/convergence_seed_0.json",
+      "results/baselines/Severity_always_admit_no_info.json",
+      "results/baselines/Risk_threshold_gating_no_exact_info.json",
+      "results/baselines/FIFO_always_admit_no_info.json",
+      "results/baselines/Severity_always_admit_exact_info.json",
+      "results/baselines/FIFO_always_admit_exact_info.json",
+      "results/baselines/Hybrid_always_admit_coarse_info.json",
+      "results/convergence/run_2/convergence_convergence_run_2.json",
+      "results/convergence/run_2/best_mechanism_convergence_run_2.json",
+      "results/convergence/run_1/best_mechanism_convergence_run_1.json",
+      "results/convergence/run_1/convergence_convergence_run_1.json",
+      "results/convergence/run_0/best_mechanism_convergence_run_0.json",
+      "results/convergence/run_0/convergence_convergence_run_0.json"
+    ],
+    "reports": [
+      "results/comprehensive_report_combined.json"
+    ],
+    "databases": []
+  }
+}

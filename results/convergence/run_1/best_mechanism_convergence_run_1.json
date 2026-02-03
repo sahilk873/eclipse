@@ -1,0 +1,43 @@
+{
+  "info_policy": {
+    "info_mode": "coarse_bins",
+    "bins": [
+      [
+        30.0,
+        "bin_1"
+      ],
+      [
+        70.0,
+        "bin_2"
+      ],
+      [
+        120.0,
+        "bin_3"
+      ]
+    ]
+  },
+  "service_policy": {
+    "service_rule": "fifo",
+    "params": {
+      "a": 4.5,
+      "b": 0.2
+    }
+  },
+  "redirect_exit_policy": {
+    "redirect_low_risk": true,
+    "redirect_mode": "combined",
+    "reneging_enabled": true,
+    "params": {
+      "risk_threshold": 0.66,
+      "congestion_threshold": 10.0
+    }
+  },
+  "meta": {
+    "id": "17fdbd92-0d7f-4d97-b9fe-734c724ebe36",
+    "parent_ids": [
+      "1d6e4f8b-5c7a-41d9-9f12-2b3a6c9e0d44"
+    ],
+    "generation": 4,
+    "seed_tag": "mutated_3669"
+  }
+}

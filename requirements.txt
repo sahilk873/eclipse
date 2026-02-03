@@ -1,0 +1,8 @@
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+pyyaml>=6.0
+jsonschema>=4.0
+pydantic>=2.0
+openai>=1.55  # Responses API (client.responses.create) supported
+python-dotenv>=1.0

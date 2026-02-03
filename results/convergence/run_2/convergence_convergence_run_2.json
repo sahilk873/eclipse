@@ -1,0 +1,92 @@
+[
+  {
+    "generation": 0,
+    "best_fitness": 4.989257305320107,
+    "best_feasible": true,
+    "avg_fitness": 3.3328942429907045,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 1.0
+  },
+  {
+    "generation": 1,
+    "best_fitness": 4.790520573643885,
+    "best_feasible": true,
+    "avg_fitness": 4.098809242499569,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 1.0
+  },
+  {
+    "generation": 2,
+    "best_fitness": 5.253513772380682,
+    "best_feasible": true,
+    "avg_fitness": 4.670362497449391,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 0.9
+  },
+  {
+    "generation": 3,
+    "best_fitness": 5.513199833736112,
+    "best_feasible": true,
+    "avg_fitness": 4.6458168386082646,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 0.81
+  },
+  {
+    "generation": 4,
+    "best_fitness": 5.121484114104884,
+    "best_feasible": true,
+    "avg_fitness": 4.184999744502819,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 0.81
+  },
+  {
+    "generation": 5,
+    "best_fitness": 6.07220538581954,
+    "best_feasible": true,
+    "avg_fitness": 5.2766712865823475,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 0.7290000000000001
+  },
+  {
+    "generation": 6,
+    "best_fitness": 5.945734589750166,
+    "best_feasible": true,
+    "avg_fitness": 5.5062901168102165,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 0.7290000000000001
+  },
+  {
+    "generation": 7,
+    "best_fitness": 5.355519868822285,
+    "best_feasible": true,
+    "avg_fitness": 4.631174821824201,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 0.7290000000000001
+  },
+  {
+    "generation": 8,
+    "best_fitness": 5.274512359755937,
+    "best_feasible": true,
+    "avg_fitness": 4.521121561233777,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 0.7290000000000001
+  },
+  {
+    "generation": 9,
+    "best_fitness": 5.656120692552069,
+    "best_feasible": true,
+    "avg_fitness": 4.785961525059596,
+    "n_feasible": 20,
+    "population_size": 20,
+    "mutation_strength": 0.6561000000000001
+  }
+]

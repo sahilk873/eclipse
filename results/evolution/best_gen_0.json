@@ -1,0 +1,8 @@
+{
+  "info_mode": "exact",
+  "gating_mode": "always_admit",
+  "service_rule": "fifo",
+  "redirect_low_risk": false,
+  "reneging_enabled": true,
+  "risk_labeling": "hidden"
+}

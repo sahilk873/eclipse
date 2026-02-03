@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+title: ECLIPSE - Evolutionary Clinical Intake and Prioritization System
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: "ECLIPSE"
+    given-names: "Contributors"
+url: "https://github.com/your-org/ECLIPSE"
+repository-code: "https://github.com/your-org/ECLIPSE"
+keywords:
+  - emergency department
+  - triage
+  - evolutionary algorithm
+  - large language model
+  - healthcare operations
+  - discrete-event simulation
+license: MIT
+abstract: >
+  ECLIPSE uses LLM-guided evolutionary search to design triage and intake
+  mechanisms for simulated clinic/ED queues, optimizing clinically constrained
+  objectives (safety first) with benchmarking against standard heuristic baselines.

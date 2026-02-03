@@ -1,0 +1,19 @@
+{
+  "info_policy": {
+    "info_mode": "exact"
+  },
+  "service_policy": {
+    "service_rule": "fifo"
+  },
+  "redirect_exit_policy": {
+    "redirect_low_risk": false,
+    "redirect_mode": "none",
+    "reneging_enabled": true
+  },
+  "meta": {
+    "id": "3d456c91-03d6-4162-916f-995ffc63c311",
+    "parent_ids": [],
+    "generation": 0,
+    "seed_tag": "baseline"
+  }
+}

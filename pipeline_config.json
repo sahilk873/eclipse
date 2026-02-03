@@ -1,0 +1,28 @@
+{
+  "description": "ECLIPSE Complete Pipeline Configuration",
+  "results_dir": "results",
+  "base_seed": 0,
+  "config_file": "config/default.yaml",
+  
+  "baseline_episodes": 100,
+  
+  "evolution_generations": 15,
+  "population_size": 30,
+  "evolution_episodes": 30,
+  
+  "run_convergence_suite": true,
+  "convergence_runs": 3,
+  "convergence_generations": 10,
+  "convergence_population": 20,
+  "convergence_episodes": 20,
+  
+  "run_robustness": true,
+  "robustness_top_k": 3,
+  
+  "run_ablations": true,
+  "ablation_episodes": 100,
+  
+  "use_llm": false,
+  "llm_api_key": null,
+  "llm_fraction": 0.2
+}

@@ -1,0 +1,126 @@
+{
+  "total_mechanisms": 6,
+  "pareto_frontier_size": 2,
+  "pareto_mechanisms": [
+    {
+      "index": 5,
+      "mechanism": {
+        "info_policy": {
+          "info_mode": "coarse_bins",
+          "bins": [
+            [
+              30,
+              "low_wait"
+            ],
+            [
+              90,
+              "medium_wait"
+            ],
+            [
+              180,
+              "high_wait"
+            ]
+          ]
+        },
+        "service_policy": {
+          "service_rule": "hybrid",
+          "params": {
+            "a": 1.0,
+            "b": 0.1
+          }
+        },
+        "redirect_exit_policy": {
+          "redirect_low_risk": false,
+          "redirect_mode": "none",
+          "reneging_enabled": true
+        },
+        "meta": {
+          "id": "6c7d6193-11a1-423f-b8fd-9cb975e2d0e0",
+          "parent_ids": [],
+          "generation": 0,
+          "seed_tag": "baseline"
+        }
+      },
+      "metrics": {
+        "throughput": 12.5,
+        "critical_TTC_p95": 15.0,
+        "adverse_events_rate": 0.05,
+        "overload_time": 25.0
+      },
+      "constraints": {
+        "missed_critical_rate": true,
+        "critical_TTC_exceeded": true
+      },
+      "objectives": {
+        "safety_indicator": 1000.0,
+        "critical_TTC_p95": 15.0,
+        "overload_time": 25.0,
+        "throughput": 12.5
+      },
+      "feasible": false
+    },
+    {
+      "index": 3,
+      "mechanism": {
+        "info_policy": {
+          "info_mode": "exact"
+        },
+        "service_policy": {
+          "service_rule": "severity_priority"
+        },
+        "redirect_exit_policy": {
+          "redirect_low_risk": false,
+          "redirect_mode": "none",
+          "reneging_enabled": true
+        },
+        "meta": {
+          "id": "975f63d2-7305-4c37-a9f7-b3f9939603e7",
+          "parent_ids": [],
+          "generation": 0,
+          "seed_tag": "baseline"
+        }
+      },
+      "metrics": {
+        "throughput": 11.5,
+        "critical_TTC_p95": 19.0,
+        "adverse_events_rate": 0.07,
+        "overload_time": 35.0
+      },
+      "constraints": {
+        "missed_critical_rate": false,
+        "critical_TTC_exceeded": false
+      },
+      "objectives": {
+        "safety_indicator": 0.0,
+        "critical_TTC_p95": 19.0,
+        "overload_time": 35.0,
+        "throughput": 11.5
+      },
+      "feasible": true
+    }
+  ],
+  "pareto_indices": [
+    3,
+    5
+  ],
+  "dominance_analysis": {
+    "total_mechanisms": 6,
+    "pareto_optimal": 2,
+    "dominated": 4,
+    "pareto_percentage": 0.3333333333333333,
+    "domination_counts": {
+      "3": 3,
+      "5": 1
+    },
+    "most_dominating_pareto": [
+      [
+        3,
+        3
+      ],
+      [
+        5,
+        1
+      ]
+    ]
+  }
+}

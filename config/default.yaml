@@ -1,0 +1,75 @@
+# ECLIPSE default experiment config
+# ref: docs/CALIBRATION.md for literature grounding of parameters
+sim:
+  T: 480  # episode length (minutes)
+  lambda: 4.0  # arrival rate per hour; ref: ~40k annual visit ED (CDC, Becker's)
+  n_servers: 3
+  Qmax: 20  # queue length threshold for overload
+  # service time: lognormal(mean, std) per risk; ref: ESI, ED length-of-stay studies
+  service:
+    critical: { dist: lognormal, mean: 30, std: 15 }
+    urgent: { dist: lognormal, mean: 20, std: 10 }
+    low: { dist: lognormal, mean: 15, std: 8 }
+  # deterioration: hazard increases with wait; ref: time-to-critical literature
+  deterioration:
+    enabled: true
+    critical_delay_min: 15
+    hazard_base: 0.01
+    hazard_per_min: 0.002
+  # patience: exponential mean (min) per class; ref: ED abandonment literature
+  patience:
+    critical: 120
+    urgent: 60
+    low: 30
+  # risk class mix (must sum to 1); ref: typical ED acuity distribution
+  risk_mix:
+    critical: 0.1
+    urgent: 0.3
+    low: 0.6
+  # patient join: benefit(risk) - c_wait * E[wait]
+  benefit_per_class:
+    critical: 100
+    urgent: 50
+    low: 20
+  c_wait: 0.5
+
+# ref: docs/CALIBRATION.md
+constraints:
+  missed_critical_epsilon: 0.02  # max 2% critical missed; clinical target
+  critical_TTC_minutes: 30       # target time-to-critical
+  critical_TTC_exceed_pct: 0.05  # max % of critical with TTC > T_crit
+
+fitness:
+  A: 100  # adverse_events
+  B: 1.0  # critical_TTC_p95
+  C: 0.1  # overload_time
+  D: 2.0  # throughput
+  E: 0.5  # mean_wait
+
+evolution:
+  N: 100                 # population size (larger for more diversity)
+  M: 10                  # elite size (10% survive when N=100)
+  elite_survival_rate: 0.1  # 10% of population survive each generation (overrides M if set)
+  K: 20
+  G: 30                  # generations
+  n_seeds: 5
+  use_llm: true  # set to true to use LLM mutation (requires OPENAI_API_KEY and pip install openai)
+  # Model: set OPENAI_LLM_MODEL env (default gpt-4o-mini). Falls back to gpt-4o-mini on model errors.
+
+  # Exploration: stronger mutations for finding unique mechanisms
+  llm_fraction: 0.4           # fraction of offspring from LLM (was 0.2)
+  stagnation_generations: 3   # gens without improvement before ramping exploration (was 5)
+  max_strength: 4.0           # max mutation strength when stuck (was 3.0)
+  jitter_range: 0.35          # param jitter ±35% of range (was 0.2)
+
+eval:
+  n_episodes_baseline: 200
+  n_episodes_ablation: 200
+
+# Pipeline steps (set true to run full pipeline)
+pipeline:
+  run_convergence_suite: true
+  run_robustness: true
+  run_ablations: true
+
+results_dir: results

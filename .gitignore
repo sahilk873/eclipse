@@ -1,0 +1,24 @@
+# Local env with secrets (use .env.example as template)
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+Untitled
+
+# Logs and checkpoints may contain API keys from config dumps
+results/logs/
+results/checkpoints/
+

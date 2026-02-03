@@ -1,0 +1,11 @@
+{
+  "info_mode": "exact",
+  "risk_labeling": "hidden",
+  "gating_mode": "probabilistic",
+  "service_rule": "hybrid",
+  "redirect_low_risk": false,
+  "redirect_threshold": 1.2,
+  "reneging_enabled": true,
+  "hybrid_a": 1.29,
+  "hybrid_b": 0.02
+}
